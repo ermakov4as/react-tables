@@ -74,7 +74,6 @@ class UserFilter extends Component {
               />{' '}
               Только из Москвы
             </Label>
-            <div>{fromMoscow+0}</div>
           </FormGroup>
         </Col>
         <Col sm="5" className={styles.uploadBtn}>
