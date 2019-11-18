@@ -1,129 +1,91 @@
 import React, { Component, Fragment } from 'react';
-import { 
-  Row, Col, 
-  Table, 
-  Button, 
-  Spinner, 
-  InputGroup, InputGroupAddon, Input, InputGroupButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem
-} from 'reactstrap';
+import { Table, Spinner } from 'reactstrap';
 import debounce from 'lodash/debounce';
 
 import { fetchData } from '../../services/api';
 import { GET_USERS } from '../../services/urls';
-/* import { sortByAlphabet } from '../../utils/sort'; */
+import reqParams from '../../utils/reqParams';
 
 import TableHeader from './TableHeader';
 import styles from './UsersTable.module.css';
-import { tableRows, throttleWait } from '../../services/mock'
+import { userParamsNames, throttleWait } from '../../services/mock';
+import UserFilter from './UserFilter';
 
 class UsersTable extends Component {
   constructor(props) {
     super(props);
-    this.loadUserData = this.loadUserData.bind(this);
     this.removeUserData = this.removeUserData.bind(this);
     this.handleClickToUserTodos = this.handleClickToUserTodos.bind(this);
     this.handleClickColumnCreator = this.handleClickColumnCreator.bind(this);
-    this.handleInputSearchUsernameChange = this.handleInputSearchUsernameChange.bind(this);
-    /* this.handleInputSearchUsernameChangeLocal = this.handleInputSearchUsernameChangeLocal.bind(this);
-    this.handleClickClearSearchingLocal = this.handleClickClearSearchingLocal.bind(this); */
+    this.handleInputSearchChange = this.handleInputSearchChange.bind(this);
     this.handleClickSelectCategory = this.handleClickSelectCategory.bind(this);
-    this.searchByUsername = this.searchByUsername.bind(this);
-    this.toggleDropDown = this.toggleDropDown.bind(this);
+    this.handleClickClearSearching = this.handleClickClearSearching.bind(this);
+    this.handleCheckboxFromMoscowChange = this.handleCheckboxFromMoscowChange.bind(this) // TODO:
+    this.searchWithDebounce = this.searchWithDebounce.bind(this);
     this.updateUserData = this.updateUserData.bind(this);
     this.state = {
       users: [],
-      usersTmp: [],
       isLoading: false,
       dataLoaded: false,
-      field: null,
+      field: 'username',
       direction: 'desc',
       loadError: false,
-      /* searchingUsername: '', */
-      searchingUsernameServer: '',
-      dropdownOpen: false,
-      searchCategory: tableRows[1]
+      searchingInput: '',
+      fromMoscow: false,
+      searchCategory: userParamsNames.find(_userData => _userData.name === 'username')
     }
   }
 
   componentDidMount() {
-    this.searchByUsername = debounce(this.searchByUsername, throttleWait);
-    this.loadUserData()
+    this.searchWithDebounce = debounce(this.searchWithDebounce, throttleWait);
+    this.updateUserData();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    /* const { usersTmp, field, direction } = this.state; */
-    const { field, direction } = this.state;
-    const { field: prevField, direction: prevDirection } = prevState;
-
+    const { field, direction, fromMoscow } = this.state;
+    const { field: prevField, direction: prevDirection, fromMoscow: prevFromMoscow } = prevState;
     if (field !== prevField || direction !== prevDirection) {
-      /* this.setState({ usersTmp: sortByAlphabet(usersTmp, field, direction) }); */
-      this.updateUserData()
+      this.updateUserData();
+    }
+    if (fromMoscow !== prevFromMoscow) {
+      this.updateUserData();
     }
   }
 
-  loadUserData() {
-    const { searchingUsernameServer } = this.state;
-    searchingUsernameServer ? this.searchByUsername(searchingUsernameServer) : this.updateUserData()
-  }
-
-  prepareReqParams() {
-    const { field, direction, searchCategory: {name: searchCategoryName}, searchingUsernameServer } = this.state;
-    let reqParams = []
-    searchingUsernameServer && reqParams.push(
-      {
-        name: 'searchField',
-        value: searchCategoryName
-      },
-      {
-        name: 'search',
-        value: searchingUsernameServer
-      })
-    field && reqParams.push(
-      {
-        name: 'field',
-        value: field
-      },
-      {
-        name: 'direction',
-        value: direction
-      }
-    )      
-    let _params = reqParams ? '?' : ''
-    reqParams.forEach(({ name, value }) => {
-      _params += (`${name}=${value}&`)  
-    });
-    return _params.slice(0, -1)
-  }
-
   updateUserData() {
+    const { field, direction, searchCategory: {name: searchCategoryName}, searchingInput, fromMoscow } = this.state;
     this.setState({ 
       isLoading: true,
-      /* dataLoaded: false, */ // TODO:
+      dataLoaded: false,
       loadError: false
     })
-    fetchData(`${GET_USERS}${this.prepareReqParams()}`).then(({ data, success }) => {
-      console.log(`${GET_USERS}${this.prepareReqParams()}`)
-      if (success && data) {
-        /* const { searchingUsername: userInput } = this.state; */
-        /* const users = data.map(({ id, name, username, email, address: { city, street }}) => ({ */
-        const users = data.map(({ id, name, username, email, city, street }) => ({
-            id,
-            name,
-            username,
-            email,
-            city,
-            street
-          }));
-        console.log(users)
+    const urlParams = reqParams([ {
+        name: 'searchField',
+        value: searchCategoryName,
+        notIncludeToReq: !searchingInput
+      }, {
+        name: 'search',
+        value: searchingInput,
+        notIncludeToReq: !searchingInput
+      }, {
+        name: 'field',
+        value: field
+      }, {
+        name: 'direction',
+        value: direction
+      }, {
+        name: 'fromMoscow',
+        value: fromMoscow,
+        notIncludeToReq: !fromMoscow
+      } ])
+    fetchData(`${GET_USERS}${urlParams}`).then(({ data: users, success }) => {
+      if (success && users) {
         this.setState({
-          /* field: null, */
           users,
-          usersTmp: users,
           isLoading: false,
           dataLoaded: true,
-          searchingUsername: '' // TODO:
+          searchingUsername: ''
         })
-        /* this.searchByUsername(userInput) */
       } else {
         this.setState({ 
           isLoading: false,
@@ -136,142 +98,80 @@ class UsersTable extends Component {
   removeUserData() {
     this.setState({
       users: [],
-      usersTmp: [],
       dataLoaded: false,
-      field: null,
       direction: 'desc'
     })
   }
 
   handleClickColumnCreator(field, direction) {
-    return this.startSort.bind(this, field, direction);
+    return this.sortData.bind(this, field, direction);
   }
 
-  startSort(field, direction) {
-    const { dataLoaded } = this.state;
-    dataLoaded && this.setState({ direction, field });
+  sortData(field, direction) {
+    this.setState({ direction, field });
   }
 
   handleClickToUserTodos(id) {
-    return this.toUserTodos.bind(this, id)
+    return this.toUserTodos.bind(this, id);
   }
 
   toUserTodos(id) {
     this.props.history.push(`/users/${id}/todos`);
   }
 
-  /* handleInputSearchUsernameChangeLocal({ target: { value: userInput }}) {
-    this.setState({ searchingUsername: userInput });
-    this.searchByUsernameLocal(userInput);
-  } */
-
-  /* handleClickClearSearchingLocal() {
-    this.searchByUsernameLocal('');
-  } */
-
-  handleInputSearchUsernameChange({ target: { value: userInput }}) {
-    const { dataLoaded } = this.state;
-    this.setState({ searchingUsernameServer: userInput });
-    dataLoaded && this.searchByUsername(userInput);
+  handleInputSearchChange({ target: { value: userInput }}) {
+    this.setState({ searchingInput: userInput });
+    this.searchWithDebounce();
   }
 
-  toggleDropDown() {
-    const { dropdownOpen } = this.state
-    this.setState({ dropdownOpen: !dropdownOpen })
-  }
-
-  /* searchByUsernameLocal(userInput) {
-    const { users } = this.state
-    if (userInput === '') this.setState({ usersTmp: users })
-    else {
-      const _users = users.filter(({ username }) => username.toLowerCase().match(`^${userInput.toLowerCase()}`))
-      this.setState({ usersTmp: _users })
-    }
-  } */
-
-  searchByUsername(userInput) {
-    this.updateUserData()
+  searchWithDebounce() { 
+    this.updateUserData();
   }
 
   handleClickSelectCategory(name) {
-    return this.selectCategory.bind(this, name)
+    return this.selectCategory.bind(this, name);
+  }
+
+  handleClickClearSearching() {
+    this.setState({ searchingInput: '' })
+    this.searchWithDebounce();
   }
 
   selectCategory(name) {
-    const { searchingUsernameServer, dataLoaded } = this.state;
-    let rowData = tableRows.find(_rowData => _rowData.name === name)
-    this.setState({ searchCategory: rowData })
-    dataLoaded && this.searchByUsername(searchingUsernameServer)
+    let userData = userParamsNames.find(_userData => _userData.name === name);
+    this.setState({ searchCategory: userData });
+    this.searchWithDebounce();
+  }
+
+  handleCheckboxFromMoscowChange() {
+    const { fromMoscow } = this.state;
+    this.setState({ fromMoscow: !fromMoscow });
   }
 
   render() {
-    const { usersTmp: users, isLoading, dataLoaded, field, direction, loadError, /* searchingUsername, */ dropdownOpen, searchingUsernameServer, searchCategory } = this.state
+    const { users, isLoading, dataLoaded, field, direction, loadError, searchingInput, searchCategory, fromMoscow } = this.state
     return (
       <Fragment>
         <h2 className={styles.tableHeader}>Таблица юзеров</h2>
-        <Row className={styles.headerRow}>
-          <Col sm="5">
-            <InputGroup className={styles.paddingSM}>
-              <InputGroupAddon addonType="prepend">Логин</InputGroupAddon>
-              <Input 
-                name="searchUsername" 
-                type="text"
-                disabled
-                /* value={searchingUsername} */ 
-                /* onChange={this.handleInputSearchUsernameChangeLocal} */ 
-                placeholder="Поддержка поиска на клиенте отключена"
-              />
-              <InputGroupAddon addonType="append">
-                <Button color="secondary" onClick={this.handleClickClearSearchingLocal}>Очистить</Button>
-              </InputGroupAddon>
-            </InputGroup>
-            <InputGroup className={styles.paddingSM}>
-              <InputGroupButtonDropdown 
-                addonType="append" 
-                isOpen={dropdownOpen} 
-                toggle={this.toggleDropDown}
-              >
-                <DropdownToggle caret>
-                  {searchCategory.title ? searchCategory.title : 'Выберите категорию'}
-                </DropdownToggle>
-                <DropdownMenu>
-                  {
-                    tableRows.map(({ name, title }) => {
-                      return (
-                        <DropdownItem key={name} onClick={this.handleClickSelectCategory(name)}>{title}</DropdownItem>
-                      )}
-                    )
-                  }
-                </DropdownMenu>
-              </InputGroupButtonDropdown>
-              <Input
-                name="searchByServer" 
-                type="text" 
-                value={searchingUsernameServer} 
-                onChange={this.handleInputSearchUsernameChange} 
-                placeholder="Поиск через сервер"
-              />
-            </InputGroup>
-          </Col>
-          <Col sm="7" className={styles.uploadBtn}>
-            {dataLoaded ? 
-              (<Button color="danger" onClick={this.removeUserData}>
-                Очистить таблицу
-              </Button>)
-              :
-              (<Button outline color="info" onClick={this.loadUserData}>
-                Загрузить данные
-              </Button>)
-            } {loadError &&
-              <p className={styles.redText}>Ошибка загрузки :(</p>
-            }
-          </Col>
-        </Row>
+        <UserFilter
+          searchCategory={searchCategory}
+          dataLoaded={dataLoaded}
+          isLoading={isLoading}
+          loadError={loadError}
+          removeUserData={this.removeUserData}
+          updateUserData={this.updateUserData}
+          handleClickClearSearching={this.handleClickClearSearching}
+          searchingInput={searchingInput}
+          fromMoscow={fromMoscow}
+          handleCheckboxFromMoscowChange={this.handleCheckboxFromMoscowChange}
+          handleInputSearchChange={this.handleInputSearchChange}
+          handleClickSelectCategory={this.handleClickSelectCategory}
+        />
         <Table striped>
           <TableHeader field={field} direction={direction} handleClickColumnCreator={this.handleClickColumnCreator} />
           <tbody>
             {
-              users && users.map(({id, name, username, email, city, street}, index) => {
+              users.map(({id, name, username, email, city, street}, index) => {
                 return (
                   <tr key={id} onClick={this.handleClickToUserTodos(id)} className={styles.pointer}>
                     <td>{index+1}</td>

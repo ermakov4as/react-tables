@@ -1,23 +1,19 @@
-import React, { Fragment, Component } from 'react'
+import React, { Fragment, Component } from 'react';
 import { Button } from 'reactstrap';
-import { ListGroup, ListGroupItem } from 'reactstrap'
-/* import cx from 'classnames' */
+import { ListGroup, ListGroupItem } from 'reactstrap';
 
-import { fetchData } from '../../services/api'
-import { GET_USER_TODOS } from '../../services/urls'
+import { fetchData } from '../../services/api';
+import { GET_USER_TODOS } from '../../services/urls';
 
-import styles from './UsersTodos.module.css'
+import styles from './UsersTodos.module.css';
 
 class UserTodos extends Component {
   constructor(props) {
     super(props);
     this.goBack = this.goBack.bind(this);
-    this.state = {
-      todos: [],
-    }
+    this.state = { todos: [] }
   }
 
-  
   componentDidMount() {
     const { match: { params: { id }}} = this.props;
     fetchData(GET_USER_TODOS(id)).then(({ data, success }) => {
@@ -30,34 +26,23 @@ class UserTodos extends Component {
   }
   
   render() {
-    const { todos } = this.state
+    const { todos } = this.state;
     const { match: { params: { id }}} = this.props;
     return (
       <Fragment>
-      <h4>UserTodos</h4>
-      <p>User: #{id}</p>
-      <Button outline color="danger" onClick={this.goBack} className={styles.btnMargin}>Назад</Button>
-      <ListGroup>
-        {todos && todos.map(({id, title, completed}, index) => {
-          return (
-            <ListGroupItem key={index * id} color={completed ? 'success' : 'danger'} className={styles.pointer}>
-              {title}
-            </ListGroupItem>
-          )
-        })}
-      </ListGroup>
-      {/* <ul>
-        {todos && todos.map(({id, title, completed}) => {
-          const listItemColorClass = cx({
-            [styles.completedListItem]: completed,
-            [styles.notCompletedListItem]: !completed
-          })
-          return (
-            <li key={id} className={listItemColorClass}>{title}{completed}</li>
-          )
-        })}
-      </ul> */}
-    </Fragment>
+        <h4>UserTodos</h4>
+        <p>User: #{id}</p>
+        <Button outline color="danger" onClick={this.goBack} className={styles.btnMargin}>Назад</Button>
+        <ListGroup>
+          {todos && todos.map(({id, title, completed}, index) => {
+            return (
+              <ListGroupItem key={index * id} color={completed ? 'success' : 'danger'} className={styles.pointer}>
+                {title}
+              </ListGroupItem>
+            )
+          })}
+        </ListGroup>
+      </Fragment>
     )
   }
 }

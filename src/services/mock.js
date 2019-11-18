@@ -1,4 +1,4 @@
-export const tableRows = [
+export const userParamsNames = [
   {
     name: 'name',
     title: 'Имя'
