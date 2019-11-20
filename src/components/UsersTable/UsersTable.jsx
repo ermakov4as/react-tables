@@ -2,13 +2,13 @@ import React, { Component, Fragment } from 'react';
 import { Table, Spinner } from 'reactstrap';
 import debounce from 'lodash/debounce';
 
-import { fetchData } from '../../services/api';
-import { GET_USERS } from '../../services/urls';
-import reqParams from '../../utils/reqParams';
+import { fetchData } from '../../common/services/api';
+import { GET_USERS } from '../../common/services/urls';
+import reqParams from '../../common/utils/reqParams';
 
 import TableHeader from './TableHeader';
 import styles from './UsersTable.module.css';
-import { userParamsNames, throttleWait } from '../../services/mock';
+import { userParamsNames, throttleWait } from '../../common/services/mock';
 import UserFilter from './UserFilter';
 
 class UsersTable extends Component {
@@ -20,9 +20,11 @@ class UsersTable extends Component {
     this.handleInputSearchChange = this.handleInputSearchChange.bind(this);
     this.handleClickSelectCategory = this.handleClickSelectCategory.bind(this);
     this.handleClickClearSearching = this.handleClickClearSearching.bind(this);
+    this.handleClickClearMailFilter = this.handleClickClearMailFilter.bind(this);
     this.handleCheckboxFromMoscowChange = this.handleCheckboxFromMoscowChange.bind(this) // TODO:
     this.searchWithDebounce = this.searchWithDebounce.bind(this);
     this.updateUserData = this.updateUserData.bind(this);
+    this.handleClickSelectMail = this.handleClickSelectMail.bind(this);
     this.state = {
       users: [],
       isLoading: false,
@@ -31,6 +33,7 @@ class UsersTable extends Component {
       direction: 'desc',
       loadError: false,
       searchingInput: '',
+      filterMail: '',
       fromMoscow: false,
       searchCategory: userParamsNames.find(_userData => _userData.name === 'username')
     }
@@ -42,18 +45,15 @@ class UsersTable extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { field, direction, fromMoscow } = this.state;
-    const { field: prevField, direction: prevDirection, fromMoscow: prevFromMoscow } = prevState;
-    if (field !== prevField || direction !== prevDirection) {
-      this.updateUserData();
-    }
-    if (fromMoscow !== prevFromMoscow) {
+    const { field, direction, fromMoscow, filterMail } = this.state;
+    const { field: prevField, direction: prevDirection, fromMoscow: prevFromMoscow, filterMail: prevFilterMail } = prevState;
+    if (field !== prevField || direction !== prevDirection || fromMoscow !== prevFromMoscow || filterMail !== prevFilterMail) {
       this.updateUserData();
     }
   }
 
   updateUserData() {
-    const { field, direction, searchCategory: {name: searchCategoryName}, searchingInput, fromMoscow } = this.state;
+    const { field, direction, searchCategory: {name: searchCategoryName}, searchingInput, fromMoscow, filterMail } = this.state;
     this.setState({ 
       isLoading: true,
       dataLoaded: false,
@@ -77,6 +77,10 @@ class UsersTable extends Component {
         name: 'fromMoscow',
         value: fromMoscow,
         notIncludeToReq: !fromMoscow
+      }, {
+        name: 'filterMail',
+        value: filterMail,
+        notIncludeToReq: !filterMail
       } ])
     fetchData(`${GET_USERS}${urlParams}`).then(({ data: users, success }) => {
       if (success && users) {
@@ -137,6 +141,10 @@ class UsersTable extends Component {
     this.searchWithDebounce();
   }
 
+  handleClickClearMailFilter() {
+    this.setState({ filterMail: '' })
+  }
+
   selectCategory(name) {
     let userData = userParamsNames.find(_userData => _userData.name === name);
     this.setState({ searchCategory: userData });
@@ -148,8 +156,13 @@ class UsersTable extends Component {
     this.setState({ fromMoscow: !fromMoscow });
   }
 
+  handleClickSelectMail({ target: { value: mail }}) {
+    this.setState({ filterMail: mail });
+    this.searchWithDebounce();
+  }
+
   render() {
-    const { users, isLoading, dataLoaded, field, direction, loadError, searchingInput, searchCategory, fromMoscow } = this.state
+    const { users, isLoading, dataLoaded, field, direction, loadError, searchingInput, searchCategory, fromMoscow, filterMail} = this.state
     return (
       <Fragment>
         <h2 className={styles.tableHeader}>Таблица юзеров</h2>
@@ -161,11 +174,14 @@ class UsersTable extends Component {
           removeUserData={this.removeUserData}
           updateUserData={this.updateUserData}
           handleClickClearSearching={this.handleClickClearSearching}
+          handleClickClearMailFilter={this.handleClickClearMailFilter}
           searchingInput={searchingInput}
+          filterMail={filterMail}
           fromMoscow={fromMoscow}
           handleCheckboxFromMoscowChange={this.handleCheckboxFromMoscowChange}
           handleInputSearchChange={this.handleInputSearchChange}
           handleClickSelectCategory={this.handleClickSelectCategory}
+          handleClickSelectMail={this.handleClickSelectMail}
         />
         <Table striped>
           <TableHeader field={field} direction={direction} handleClickColumnCreator={this.handleClickColumnCreator} />

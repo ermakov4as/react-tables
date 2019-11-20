@@ -58,6 +58,13 @@ const filterFromMoscow = (response) => {
   });
 };
 
+const filterMailfunction = (response, filterMail) => {
+  console.log('onye emails in ', filterMail)
+  return response.filter(elem => {
+    return elem.email.indexOf(filterMail) + 1
+  })
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////     CORE FUNCTIONS     ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +75,7 @@ app.get("/users", function(req, res) {
   const searchField = req.query.searchField;
   const search = req.query.search;
   const fromMoscow = req.query.fromMoscow;
+  const filterMail = req.query.filterMail;
   let response = users;
   if (field && direction) {
     response = sortFunction(users, field, direction);
@@ -78,6 +86,9 @@ app.get("/users", function(req, res) {
   if (fromMoscow) {
     response = filterFromMoscow(response);
   }
+  if (filterMail) {
+    response = filterMailfunction(response, filterMail);
+  }
   res.send(response);
 });
 
@@ -85,7 +96,7 @@ app.get("/users/:id/todos", function(req, res) {
   res.send(getTodos(+req.params.id));
 });
 
-app.listen(8080, "0.0.0.0", () => {
+app.listen(8087, "0.0.0.0", () => {
   console.clear();
   console.log(`🚀 Server ready`);
 });

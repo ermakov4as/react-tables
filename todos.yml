@@ -1,0 +1,6 @@
+info: to start server, 'nodemon run src/server.js'
+
+reselect -> createSelector
+1) Структура приложения
+2) Redux - inet
+3) users -> redux

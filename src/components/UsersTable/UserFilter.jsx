@@ -1,19 +1,27 @@
 import React, { Component } from 'react';
 import { 
   Row, Col, Button, Label, FormGroup,
-  InputGroup, InputGroupAddon, Input, InputGroupButtonDropdown, 
+  InputGroup, InputGroupAddon, Input, InputGroupButtonDropdown, InputGroupText,
   DropdownToggle, DropdownMenu, DropdownItem 
 } from 'reactstrap';
 
 import styles from './UsersTable.module.css';
-import { userParamsNames } from '../../services/mock';
+import { userParamsNames } from '../../common/services/mock';
 
 class UserFilter extends Component {
   constructor(props) {
     super(props);
     this.toggleDropdown = this.toggleDropdown.bind(this);
     this.state = {
-      dropdownOpen: false
+      dropdownOpen: false,
+      mails: [
+        '',
+        '@gmail.com',
+        '@yandex.ru',
+        '@hotmail.com',
+        '@mail.ru',
+        '@rambler.ru'
+      ]
     }
   }
 
@@ -31,13 +39,16 @@ class UserFilter extends Component {
       removeUserData,
       updateUserData,
       handleClickClearSearching,
+      handleClickClearMailFilter,
       searchingInput,
-      fromMoscow, // TODO:
+      filterMail,
+      fromMoscow,
       handleInputSearchChange,
       handleClickSelectCategory,
-      handleCheckboxFromMoscowChange // TODO:
+      handleCheckboxFromMoscowChange,
+      handleClickSelectMail
     } = this.props
-    const { dropdownOpen } = this.state
+    const { dropdownOpen, mails } = this.state
     return (
       <Row className={styles.headerRow}>
         <Col sm="7">
@@ -74,6 +85,28 @@ class UserFilter extends Component {
               />{' '}
               Только из Москвы
             </Label>
+          </FormGroup>
+          <br />
+          <FormGroup>
+            <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Фильтр по почте: </InputGroupText>
+            </InputGroupAddon>
+              <Input type="select" name="select" value={filterMail} onChange={handleClickSelectMail}>
+                {
+                  mails.map((mail, index) => {
+                    return (
+                      <option key={index} value={index===0 ? '' : mail} disabled={index===0}>
+                        { mail ? mail : 'Выберите почту' }
+                      </option>
+                    )
+                  })
+                }
+              </Input>
+              <InputGroupAddon addonType="append">
+                <Button color="warning" onClick={handleClickClearMailFilter}>Очистить</Button>
+              </InputGroupAddon>
+            </InputGroup>
           </FormGroup>
         </Col>
         <Col sm="5" className={styles.uploadBtn}>

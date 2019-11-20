@@ -2,8 +2,8 @@ import React, { Fragment, Component } from 'react';
 import { Button } from 'reactstrap';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 
-import { fetchData } from '../../services/api';
-import { GET_USER_TODOS } from '../../services/urls';
+import { fetchData } from '../../common/services/api';
+import { GET_USER_TODOS } from '../../common/services/urls';
 
 import styles from './UsersTodos.module.css';
 
