@@ -1,8 +1,8 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import HomeInfo from './components/HomeInfo'
-import UsersTable from './components/UsersTable'
-import UserTodos from './components/UserTodos'
+import HomeInfo from './modules/HomeInfo'
+import UsersTable from './modules/UsersTable'
+import UserTodos from './modules/UserTodos'
 
 const App = () => (
   <Router>

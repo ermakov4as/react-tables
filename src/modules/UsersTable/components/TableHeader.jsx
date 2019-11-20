@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
-import { ReactComponent as SortUp } from '../../common/assets/sort-up.svg';
-import { ReactComponent as SortDown } from '../../common/assets/sort-down.svg';
+import { ReactComponent as SortUp } from '../../../common/assets/sort-up.svg';
+import { ReactComponent as SortDown } from '../../../common/assets/sort-down.svg';
 
-import styles from './UsersTable.module.css';
-import { userParamsNames } from '../../common/services/mock';
+import styles from '../UsersTable.module.css';
+import { userParamsNames } from '../../../common/services/mock';
 
 const inverted = {
   asc: 'desc',

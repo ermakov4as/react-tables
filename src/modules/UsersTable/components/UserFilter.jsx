@@ -5,8 +5,8 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem 
 } from 'reactstrap';
 
-import styles from './UsersTable.module.css';
-import { userParamsNames } from '../../common/services/mock';
+import styles from '../UsersTable.module.css';
+import { userParamsNames } from '../../../common/services/mock';
 
 class UserFilter extends Component {
   constructor(props) {

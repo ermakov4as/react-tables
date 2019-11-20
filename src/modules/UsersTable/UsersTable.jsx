@@ -6,10 +6,10 @@ import { fetchData } from '../../common/services/api';
 import { GET_USERS } from '../../common/services/urls';
 import reqParams from '../../common/utils/reqParams';
 
-import TableHeader from './TableHeader';
+import TableHeader from './components/TableHeader';
 import styles from './UsersTable.module.css';
 import { userParamsNames, throttleWait } from '../../common/services/mock';
-import UserFilter from './UserFilter';
+import UserFilter from './components/UserFilter';
 
 class UsersTable extends Component {
   constructor(props) {
