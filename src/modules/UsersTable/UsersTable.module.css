@@ -23,6 +23,12 @@
   width: auto;
 }
 
+.deleteIcon {
+  height: 18px;
+  width: auto;
+  cursor: pointer;
+}
+
 .pointer {
   cursor: pointer;
 }

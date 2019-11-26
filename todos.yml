@@ -1,6 +1,10 @@
 info: to start server, 'nodemon run src/server.js'
+В консоли: store.getState(); // при window.store = store;
 
 reselect -> createSelector
-1) Структура приложения
-2) Redux - inet
-3) users -> redux
+
+TOTOs:
+!) Подрубить системник
+!?) RT?
+
+1) see eslint

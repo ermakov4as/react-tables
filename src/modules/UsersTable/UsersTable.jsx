@@ -8,34 +8,25 @@ import reqParams from '../../common/utils/reqParams';
 
 import TableHeader from './components/TableHeader';
 import styles from './UsersTable.module.css';
-import { userParamsNames, throttleWait } from '../../common/services/mock';
+import { throttleWait } from '../../common/services/mock';
 import UserFilter from './components/UserFilter';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setUsers } from './actions/users';
+import { setFilters } from './actions/filters';
 
 class UsersTable extends Component {
   constructor(props) {
     super(props);
     this.removeUserData = this.removeUserData.bind(this);
     this.handleClickToUserTodos = this.handleClickToUserTodos.bind(this);
-    this.handleClickColumnCreator = this.handleClickColumnCreator.bind(this);
-    this.handleInputSearchChange = this.handleInputSearchChange.bind(this);
-    this.handleClickSelectCategory = this.handleClickSelectCategory.bind(this);
-    this.handleClickClearSearching = this.handleClickClearSearching.bind(this);
-    this.handleClickClearMailFilter = this.handleClickClearMailFilter.bind(this);
-    this.handleCheckboxFromMoscowChange = this.handleCheckboxFromMoscowChange.bind(this) // TODO:
     this.searchWithDebounce = this.searchWithDebounce.bind(this);
     this.updateUserData = this.updateUserData.bind(this);
-    this.handleClickSelectMail = this.handleClickSelectMail.bind(this);
     this.state = {
-      users: [],
       isLoading: false,
       dataLoaded: false,
-      field: 'username',
-      direction: 'desc',
-      loadError: false,
-      searchingInput: '',
-      filterMail: '',
-      fromMoscow: false,
-      searchCategory: userParamsNames.find(_userData => _userData.name === 'username')
+      loadError: false
     }
   }
 
@@ -45,21 +36,26 @@ class UsersTable extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { field, direction, fromMoscow, filterMail } = this.state;
-    const { field: prevField, direction: prevDirection, fromMoscow: prevFromMoscow, filterMail: prevFilterMail } = prevState;
-    if (field !== prevField || direction !== prevDirection || fromMoscow !== prevFromMoscow || filterMail !== prevFilterMail) {
-      this.updateUserData();
+    const { filters: { field, direction, fromMoscow, filterMail, searchingInput, searchCategory: { name: searchCategoryName } } } = this.props;
+    const { filters: { field: prevField, direction: prevDirection, fromMoscow: prevFromMoscow, 
+      filterMail: prevFilterMail, searchingInput: prevSearchingInput, searchCategory: { name: prevSearchCategoryName } } } = prevProps;
+    if (field !== prevField || direction !== prevDirection || fromMoscow !== prevFromMoscow || filterMail !== prevFilterMail ||
+      searchCategoryName !== prevSearchCategoryName) {
+        this.updateUserData();
+    }
+    if (searchingInput !== prevSearchingInput) {
+      this.searchWithDebounce();
     }
   }
 
   updateUserData() {
-    const { field, direction, searchCategory: {name: searchCategoryName}, searchingInput, fromMoscow, filterMail } = this.state;
+    const { filters: { field, direction, searchingInput, fromMoscow, filterMail, searchCategory: {name: searchCategoryName} } } = this.props
     this.setState({ 
       isLoading: true,
       dataLoaded: false,
       loadError: false
     })
-    const urlParams = reqParams([ {
+    const urlParams = reqParams([ { // TODO:
         name: 'searchField',
         value: searchCategoryName,
         notIncludeToReq: !searchingInput
@@ -85,11 +81,10 @@ class UsersTable extends Component {
     fetchData(`${GET_USERS}${urlParams}`).then(({ data: users, success }) => {
       if (success && users) {
         this.setState({
-          users,
           isLoading: false,
-          dataLoaded: true,
-          searchingUsername: ''
+          dataLoaded: true
         })
+        this.props.setUsers(users);
       } else {
         this.setState({ 
           isLoading: false,
@@ -100,19 +95,9 @@ class UsersTable extends Component {
   }
 
   removeUserData() {
-    this.setState({
-      users: [],
-      dataLoaded: false,
-      direction: 'desc'
-    })
-  }
-
-  handleClickColumnCreator(field, direction) {
-    return this.sortData.bind(this, field, direction);
-  }
-
-  sortData(field, direction) {
-    this.setState({ direction, field });
+    this.setState({ dataLoaded: false })
+    this.props.setFilters({ direction: 'desc' })
+    this.props.setUsers([]);
   }
 
   handleClickToUserTodos(id) {
@@ -123,68 +108,25 @@ class UsersTable extends Component {
     this.props.history.push(`/users/${id}/todos`);
   }
 
-  handleInputSearchChange({ target: { value: userInput }}) {
-    this.setState({ searchingInput: userInput });
-    this.searchWithDebounce();
-  }
-
   searchWithDebounce() { 
     this.updateUserData();
   }
 
-  handleClickSelectCategory(name) {
-    return this.selectCategory.bind(this, name);
-  }
-
-  handleClickClearSearching() {
-    this.setState({ searchingInput: '' })
-    this.searchWithDebounce();
-  }
-
-  handleClickClearMailFilter() {
-    this.setState({ filterMail: '' })
-  }
-
-  selectCategory(name) {
-    let userData = userParamsNames.find(_userData => _userData.name === name);
-    this.setState({ searchCategory: userData });
-    this.searchWithDebounce();
-  }
-
-  handleCheckboxFromMoscowChange() {
-    const { fromMoscow } = this.state;
-    this.setState({ fromMoscow: !fromMoscow });
-  }
-
-  handleClickSelectMail({ target: { value: mail }}) {
-    this.setState({ filterMail: mail });
-    this.searchWithDebounce();
-  }
-
   render() {
-    const { users, isLoading, dataLoaded, field, direction, loadError, searchingInput, searchCategory, fromMoscow, filterMail} = this.state
+    const { isLoading, dataLoaded, loadError } = this.state
+    const { users } = this.props
     return (
       <Fragment>
         <h2 className={styles.tableHeader}>Таблица юзеров</h2>
         <UserFilter
-          searchCategory={searchCategory}
           dataLoaded={dataLoaded}
           isLoading={isLoading}
           loadError={loadError}
           removeUserData={this.removeUserData}
           updateUserData={this.updateUserData}
-          handleClickClearSearching={this.handleClickClearSearching}
-          handleClickClearMailFilter={this.handleClickClearMailFilter}
-          searchingInput={searchingInput}
-          filterMail={filterMail}
-          fromMoscow={fromMoscow}
-          handleCheckboxFromMoscowChange={this.handleCheckboxFromMoscowChange}
-          handleInputSearchChange={this.handleInputSearchChange}
-          handleClickSelectCategory={this.handleClickSelectCategory}
-          handleClickSelectMail={this.handleClickSelectMail}
         />
         <Table striped>
-          <TableHeader field={field} direction={direction} handleClickColumnCreator={this.handleClickColumnCreator} />
+          <TableHeader />
           <tbody>
             {
               users.map(({id, name, username, email, city, street}, index) => {
@@ -218,4 +160,15 @@ class UsersTable extends Component {
   }
 }
 
-export default UsersTable;
+const mapStateToProps = state => ({
+  users: state.users,
+  filters: state.filters
+})
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({
+    setUsers,
+    setFilters
+  }, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(UsersTable);

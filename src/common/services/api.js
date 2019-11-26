@@ -1,9 +1,11 @@
 import { BASE_URL } from './urls'
 
 export async function fetchData(url, params=null) {
+  console.log(url) // TODO: remove
   let success = false;
   let req = fetch(`${BASE_URL}${url}`, params)
     .then(response => {
+
       success = true;
       return response.json();
     })

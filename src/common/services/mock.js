@@ -22,3 +22,12 @@ export const userParamsNames = [
 ]
 
 export const throttleWait = 250
+
+export const mails = [
+  '',
+  '@gmail.com',
+  '@yandex.ru',
+  '@hotmail.com',
+  '@mail.ru',
+  '@rambler.ru'
+]
