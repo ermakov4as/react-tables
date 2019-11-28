@@ -1,15 +1,16 @@
-import { BASE_URL } from './urls'
+import { BASE_URL } from './urls';
 
-export async function fetchData(url, params=null) {
-  console.log(url) // TODO: remove
+async function fetchData(url, params=null) {
   let success = false;
-  let req = fetch(`${BASE_URL}${url}`, params)
+  const req = fetch(`${BASE_URL}${url}`, params)
     .then(response => {
 
       success = true;
       return response.json();
     })
-    .catch(error => console.error(error))
-  let data = await req
-  return {data, success}
+    .catch(error => console.error(error));
+  const data = await req;
+  return {data, success};
 }
+
+export default fetchData();

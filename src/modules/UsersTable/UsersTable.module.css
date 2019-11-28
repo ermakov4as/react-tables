@@ -2,46 +2,46 @@
   border: 2px solid red;
   background: yellow;
   color: red;
-}
+};
 
 .tableHeader {
   text-align: center;
-}
+};
 
 .uploadBtn {
   text-align: right;
-}
+};
 
 .headerRow {
   padding: 10px;
   padding-left: 30px!important;
   padding-right: 30px!important;
-}
+};
 
 .sortIcon {
   height: 18px;
   width: auto;
-}
+};
 
 .deleteIcon {
   height: 18px;
   width: auto;
   cursor: pointer;
-}
+};
 
 .pointer {
   cursor: pointer;
-}
+};
 
 .redText {
   color: red;
   font-weight: bolder;
-}
+};
 
 .center {
   text-align: center;
-}
+};
 
 .paddingSM {
   padding: 5px;
-}
+};

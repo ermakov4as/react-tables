@@ -1,18 +1,21 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { 
   Row, Col, Button, Label, FormGroup,
   InputGroup, InputGroupAddon, Input, InputGroupButtonDropdown, InputGroupText,
   DropdownToggle, DropdownMenu, DropdownItem 
 } from 'reactstrap';
-import { ReactComponent as Delete } from '../../../common/assets/delete.svg';
+
+import { ReactComponent as Delete } from 'common/assets/delete.svg';
+
+import { userParamsNames, mails } from 'common/services/mock';
+
+import { setUsers } from 'modules/UsersTable/actions/users';
+import { setFilters, resetFilters } from 'modules/UsersTable/actions/filters';
 
 import styles from '../UsersTable.module.css';
-import { userParamsNames, mails } from '../../../common/services/mock';
 
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { setUsers } from '../actions/users';
-import { setFilters, resetFilters } from '../actions/filters';
 
 class UserFilter extends Component {
   constructor(props) {
@@ -26,43 +29,43 @@ class UserFilter extends Component {
     this.handleClickResetFilters = this.handleClickResetFilters.bind(this);
     this.state = {
       dropdownOpen: false
-    }
-  }
+    };
+  };
 
   toggleDropdown() {
     const { dropdownOpen } = this.state;
     this.setState({ dropdownOpen: !dropdownOpen });
-  }
+  };
 
   handleCheckboxFromMoscowChange() {
     const { filters: { fromMoscow } } = this.props;
     this.props.setFilters({ fromMoscow: !fromMoscow });
-  }
+  };
 
   handleClickSelectCategory(name) {
     return this.selectCategory.bind(this, name);
-  }
+  };
 
   selectCategory(name) {
     const userData = userParamsNames.find(_userData => _userData.name === name);
     this.props.setFilters({ searchCategory: userData });
-  }
+  };
 
   handleClickSelectMail({ target: { value: mail }}) {
-    this.props.setFilters({ filterMail: mail })
-  }
+    this.props.setFilters({ filterMail: mail });
+  };
 
   handleClickClearMailFilter() {
-    this.props.setFilters({ filterMail: '' })
-  }
+    this.props.setFilters({ filterMail: '' });
+  };
 
   handleInputSearchChange({ target: { value: userInput }}) {
     this.props.setFilters({ searchingInput: userInput });
-  }
+  };
 
   handleClickResetFilters() {
-    this.props.resetFilters()
-  }
+    this.props.resetFilters();
+  };
 
   render() {
     const {
@@ -72,8 +75,8 @@ class UserFilter extends Component {
       loadError,
       removeUserData,
       updateUserData
-    } = this.props
-    const { dropdownOpen } = this.state
+    } = this.props;
+    const { dropdownOpen } = this.state;
     return (
       <Row className={styles.headerRow}>
         <Col sm="4">
@@ -104,7 +107,8 @@ class UserFilter extends Component {
                 type="checkbox"
                 checked={fromMoscow}
                 onChange={this.handleCheckboxFromMoscowChange} 
-              />{' '}
+              />
+              {' '}
               Только из Москвы
             </Label>
           </FormGroup>
@@ -118,55 +122,53 @@ class UserFilter extends Component {
               {
                 mails.map((mail, index) => {
                   return (
-                    <option key={index} value={index===0 ? '' : mail} disabled={index===0}>
-                      { mail ? mail : 'Выберите почту' }
+                    <option key={mail.value} value={index===0 ? '' : mail} disabled={index===0}>
+                      { mail || 'Выберите почту' }
                     </option>
-                  )
+                  );
                 })
               }
             </Input>
-            {filterMail &&
+            {filterMail && (
               <InputGroupAddon addonType="prepend">
                 <InputGroupText>
                   <Delete className={styles.deleteIcon} onClick={this.handleClickClearMailFilter} />
                 </InputGroupText>
               </InputGroupAddon>
-            }
+            )}
           </InputGroup>
         </Col>
         <Col sm="4" className={styles.uploadBtn}>
-          {dataLoaded && !isLoading &&
-            <Fragment>
+          {dataLoaded && !isLoading && (
+            <>
               <Button color="danger" onClick={removeUserData}>Очистить таблицу</Button>
-              <br/><br/>
+              <br />
+              <br />
               <Button color="outline-danger" onClick={this.handleClickResetFilters}>Сбросить фильтры</Button>
-            </Fragment>
-          }
+            </>
+          )}
           {!dataLoaded && isLoading &&
-            <Button outline color="warning" disabled>Загрузка . . .</Button>
-          }
+            <Button outline color="warning" disabled>Загрузка . . .</Button>}
           {!dataLoaded && !isLoading &&
-            <Button outline color="info" onClick={updateUserData}>Загрузить данные</Button>
-          }
+            <Button outline color="info" onClick={updateUserData}>Загрузить данные</Button>}
           {loadError &&
-            <p className={styles.redText}>Ошибка загрузки :(</p>
-          }
+            <p className={styles.redText}>Ошибка загрузки :(</p>}
         </Col>
       </Row>
-    )
-  }
-}
+    );
+  };
+};
 
 const mapStateToProps = state => ({
   users: state.users,
   filters: state.filters
-})
+});
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     setUsers,
     setFilters,
     resetFilters
-  }, dispatch)
+  }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserFilter);

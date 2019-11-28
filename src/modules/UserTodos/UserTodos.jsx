@@ -1,9 +1,8 @@
-import React, { Fragment, Component } from 'react';
-import { Button } from 'reactstrap';
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import React, { Component } from 'react';
+import { Button , ListGroup, ListGroupItem } from 'reactstrap';
 
-import { fetchData } from '../../common/services/api';
-import { GET_USER_TODOS } from '../../common/services/urls';
+import fetchData from 'common/services/api';
+import { GET_USER_TODOS } from 'common/services/urls';
 
 import styles from './UsersTodos.module.css';
 
@@ -11,40 +10,43 @@ class UserTodos extends Component {
   constructor(props) {
     super(props);
     this.goBack = this.goBack.bind(this);
-    this.state = { todos: [] }
-  }
+    this.state = { todos: [] };
+  };
 
   componentDidMount() {
     const { match: { params: { id }}} = this.props;
     fetchData(GET_USER_TODOS(id)).then(({ data, success }) => {
-      success && (this.setState({ todos: data }))
-    })
-  }
+      if (success) this.setState({ todos: data });
+    });
+  };
 
   goBack() {
     this.props.history.push('/users');
-  }
+  };
   
   render() {
     const { todos } = this.state;
-    const { match: { params: { id }}} = this.props;
+    const { match: { params: { id: routeId }}} = this.props;
     return (
-      <Fragment>
+      <>
         <h4>UserTodos</h4>
-        <p>User: #{id}</p>
+        <p>
+          User: #
+          {routeId}
+        </p>
         <Button outline color="danger" onClick={this.goBack} className={styles.btnMargin}>Назад</Button>
         <ListGroup>
-          {todos && todos.map(({id, title, completed}, index) => {
+          {todos && todos.map(({id, title, completed}) => {
             return (
-              <ListGroupItem key={index * id} color={completed ? 'success' : 'danger'} className={styles.pointer}>
+              <ListGroupItem key={id} color={completed ? 'success' : 'danger'} className={styles.pointer}>
                 {title}
               </ListGroupItem>
             )
           })}
         </ListGroup>
-      </Fragment>
-    )
-  }
-}
+      </>
+    );
+  };
+};
 
-export default UserTodos
+export default UserTodos;

@@ -19,9 +19,9 @@ export const userParamsNames = [
     name: 'street',
     title: 'Улица'
   }
-]
+];
 
-export const throttleWait = 250
+export const throttleWait = 250;
 
 export const mails = [
   '',
@@ -30,4 +30,4 @@ export const mails = [
   '@hotmail.com',
   '@mail.ru',
   '@rambler.ru'
-]
+];

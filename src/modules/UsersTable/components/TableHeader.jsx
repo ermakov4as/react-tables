@@ -1,31 +1,31 @@
-import React, { Fragment, Component } from 'react';
-import { ReactComponent as SortUp } from '../../../common/assets/sort-up.svg';
-import { ReactComponent as SortDown } from '../../../common/assets/sort-down.svg';
-
-import styles from '../UsersTable.module.css';
-import { userParamsNames } from '../../../common/services/mock';
-
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setFilters } from '../actions/filters';
 
+import { ReactComponent as SortUp } from 'common/assets/sort-up.svg';
+import { ReactComponent as SortDown } from 'common/assets/sort-down.svg';
+
+import { userParamsNames } from 'common/services/mock';
+import { setFilters } from 'modules/UsersTable/actions/filters';
+
+import styles from 'modules/UsersTable/UsersTable.module.css';
 
 const inverted = {
   asc: 'desc',
   desc: 'asc'
-}
+};
 
 class TableHeader extends Component {
-  handleClickColumnCreator = (field, direction) => {
+  handleClickColumnCreator(field, direction) {
     return this.sortData.bind(this, field, direction);
-  }
+  };
 
   sortData(field, direction) {
     this.props.setFilters({ direction, field });
-  }
+  };
   
   render() {
-    const { filters: { field, direction } } = this.props
+    const { filters: { field, direction } } = this.props;
     return (
       <thead>
         <tr>
@@ -35,33 +35,33 @@ class TableHeader extends Component {
               return (
                 <th 
                   onClick={this.handleClickColumnCreator(name, field===name ? inverted[direction] : 'desc')}
-                  className={styles.pointer} 
-                  key={name}  
+                  className={styles.pointer}
+                  key={name}
                 >
                   <span>{ title }</span>
-                    {field===name && 
-                      <Fragment>
+                    {field===name && (
+                      <>
                         <span>{ direction==='asc' && <SortUp className={styles.sortIcon} /> }</span>
                         <span>{ direction==='desc' && <SortDown className={styles.sortIcon} /> }</span>
-                      </Fragment>
-                    }
+                      </>
+                    )}
                 </th>
-              )
+              );
             })
           }
         </tr>
       </thead>
-    )
-  }
-}
+    );
+  };
+};
 
 const mapStateToProps = state => ({
   filters: state.filters
-})
+});
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     setFilters,
-  }, dispatch)
+  }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableHeader);

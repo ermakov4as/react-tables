@@ -1,5 +1,5 @@
-import { SET_FILTERS, RESET_FILTERS } from '../../../common/constants/actionTypes';
-import { userParamsNames } from '../../../common/services/mock';
+import { SET_FILTERS, RESET_FILTERS } from 'common/constants/actionTypes';
+import { userParamsNames } from 'common/services/mock';
 
 const initialState = {
   field: 'username',
@@ -16,13 +16,13 @@ export default (state=initialState, { type, payload }) => {
       return {
         ...state,
         ...payload
-      }
+      };
     }
     case RESET_FILTERS: {
-      return initialState
+      return initialState;
     }
     default: {
       return state;
     }
-  }
+  };
 };

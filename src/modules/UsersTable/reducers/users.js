@@ -1,4 +1,4 @@
-import { SET_USERS, RESET_USERS } from '../../../common/constants/actionTypes';
+import { SET_USERS, RESET_USERS } from 'common/constants/actionTypes';
 
 const initialState = [];
 
@@ -8,11 +8,11 @@ export default (state = initialState, { type, payload }) => {
       return [...payload];
     }
     case RESET_USERS: {
-      return initialState
+      return initialState;
     }
     default: {
       return state;
     }
-  }
+  };
 };
 
