@@ -44,7 +44,7 @@ class UserFilter extends Component {
   }
 
   selectCategory(name) {
-    let userData = userParamsNames.find(_userData => _userData.name === name);
+    const userData = userParamsNames.find(_userData => _userData.name === name);
     this.props.setFilters({ searchCategory: userData });
   }
 

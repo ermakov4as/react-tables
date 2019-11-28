@@ -3,7 +3,7 @@ info: to start server, 'nodemon run src/server.js'
 
 reselect -> createSelector
 
-TOTOs:
+TODOs:
 !) Подрубить системник
 !?) RT?
 

@@ -13,7 +13,7 @@ import UserFilter from './components/UserFilter';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setUsers } from './actions/users';
+import { setUsers, resetUsers } from './actions/users';
 import { setFilters } from './actions/filters';
 
 class UsersTable extends Component {
@@ -55,7 +55,7 @@ class UsersTable extends Component {
       dataLoaded: false,
       loadError: false
     })
-    const urlParams = reqParams([ { // TODO:
+    const urlParams = reqParams([ {
         name: 'searchField',
         value: searchCategoryName,
         notIncludeToReq: !searchingInput
@@ -95,9 +95,8 @@ class UsersTable extends Component {
   }
 
   removeUserData() {
-    this.setState({ dataLoaded: false })
-    this.props.setFilters({ direction: 'desc' })
-    this.props.setUsers([]);
+    this.setState({ dataLoaded: false });
+    this.props.resetUsers();
   }
 
   handleClickToUserTodos(id) {
@@ -168,6 +167,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     setUsers,
+    resetUsers,
     setFilters
   }, dispatch)
 

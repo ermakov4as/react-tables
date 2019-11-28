@@ -1,6 +1,8 @@
-import { SET_USERS } from '../../../common/constants/actionTypes';
+import { SET_USERS, RESET_USERS } from '../../../common/constants/actionTypes';
 
 export const setUsers = payload => ({ type: SET_USERS, payload });
+export const resetUsers = () => ({ type: RESET_USERS });
+
 
 /* import { ADD_TODO, TOGGLE_TODO, SET_FILTER } from "./actionTypes";
 

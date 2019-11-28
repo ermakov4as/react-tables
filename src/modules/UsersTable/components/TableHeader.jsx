@@ -19,9 +19,11 @@ class TableHeader extends Component {
   handleClickColumnCreator = (field, direction) => {
     return this.sortData.bind(this, field, direction);
   }
+
   sortData(field, direction) {
     this.props.setFilters({ direction, field });
   }
+  
   render() {
     const { filters: { field, direction } } = this.props
     return (
