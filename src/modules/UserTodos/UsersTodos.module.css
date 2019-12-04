@@ -1,15 +1,15 @@
 .completedListItem {
   background-color: lightgreen;
-};
+}
 
 .notCompletedListItem {
   background-color: lightsalmon;
-};
+}
 
 .btnMargin {
   margin: 10px;
-};
+}
 
 .pointer {
   cursor: pointer;
-};
+}

@@ -9,6 +9,7 @@ import { userParamsNames } from 'common/services/mock';
 import { setFilters } from 'modules/UsersTable/actions/filters';
 
 import styles from 'modules/UsersTable/UsersTable.module.css';
+import { getFilters } from '../selectors/filters';
 
 const inverted = {
   asc: 'desc',
@@ -56,7 +57,7 @@ class TableHeader extends Component {
 };
 
 const mapStateToProps = state => ({
-  filters: state.filters
+  filters: getFilters(state)
 });
 
 const mapDispatchToProps = dispatch =>

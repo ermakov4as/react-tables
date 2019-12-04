@@ -4,7 +4,6 @@ async function fetchData(url, params=null) {
   let success = false;
   const req = fetch(`${BASE_URL}${url}`, params)
     .then(response => {
-
       success = true;
       return response.json();
     })
@@ -13,4 +12,4 @@ async function fetchData(url, params=null) {
   return {data, success};
 }
 
-export default fetchData();
+export default fetchData;

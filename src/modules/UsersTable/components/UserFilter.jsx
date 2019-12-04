@@ -15,6 +15,8 @@ import { setUsers } from 'modules/UsersTable/actions/users';
 import { setFilters, resetFilters } from 'modules/UsersTable/actions/filters';
 
 import styles from '../UsersTable.module.css';
+import { getUsers } from '../selectors/users';
+import { getFilters } from '../selectors/filters';
 
 
 class UserFilter extends Component {
@@ -122,7 +124,7 @@ class UserFilter extends Component {
               {
                 mails.map((mail, index) => {
                   return (
-                    <option key={mail.value} value={index===0 ? '' : mail} disabled={index===0}>
+                    <option key={mail} value={index===0 ? '' : mail} disabled={index===0}>
                       { mail || 'Выберите почту' }
                     </option>
                   );
@@ -160,8 +162,8 @@ class UserFilter extends Component {
 };
 
 const mapStateToProps = state => ({
-  users: state.users,
-  filters: state.filters
+  users: getUsers(state),
+  filters: getFilters(state)
 });
 
 const mapDispatchToProps = dispatch =>

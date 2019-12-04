@@ -15,6 +15,8 @@ import UserFilter from './components/UserFilter';
 
 import { setUsers, resetUsers } from './actions/users';
 import { setFilters } from './actions/filters';
+import { getUsers } from './selectors/users';
+import { getFilters } from './selectors/filters';
 
 class UsersTable extends Component {
   constructor(props) {
@@ -158,8 +160,8 @@ class UsersTable extends Component {
 };
 
 const mapStateToProps = state => ({
-  users: state.users,
-  filters: state.filters
+  users: getUsers(state),
+  filters: getFilters(state)
 });
 
 const mapDispatchToProps = dispatch =>
