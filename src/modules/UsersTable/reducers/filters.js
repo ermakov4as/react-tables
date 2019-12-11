@@ -7,7 +7,7 @@ const initialState = {
   searchingInput: '',
   filterMail: '',
   fromMoscow: false,
-  searchCategory: userParamsNames.find(_userData => _userData.name === 'username')
+  searchCategory: userParamsNames[1]
 };
 
 export default (state=initialState, { type, payload }) => {

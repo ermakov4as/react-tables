@@ -11,12 +11,14 @@ import { ReactComponent as Delete } from 'common/assets/delete.svg';
 
 import { userParamsNames, mails } from 'common/services/mock';
 
-import { setUsers } from 'modules/UsersTable/actions/users';
+import { setUsers, resetUsers } from 'modules/UsersTable/actions/users';
 import { setFilters, resetFilters } from 'modules/UsersTable/actions/filters';
+import { getIsUsersFetchError, getAreUsersLoaded } from 'modules/UsersTable/selectors/users';
+import { getFilters } from 'modules/UsersTable/selectors/filters';
+import { getIsFetching } from 'common/selectors/fetcher';
 
-import styles from '../UsersTable.module.css';
-import { getUsers } from '../selectors/users';
-import { getFilters } from '../selectors/filters';
+import styles from 'modules/UsersTable/UsersTable.module.css';
+import { FETCH_USERS } from 'common/constants/actionTypes';
 
 
 class UserFilter extends Component {
@@ -29,6 +31,7 @@ class UserFilter extends Component {
     this.handleClickClearMailFilter = this.handleClickClearMailFilter.bind(this);
     this.handleInputSearchChange = this.handleInputSearchChange.bind(this);
     this.handleClickResetFilters = this.handleClickResetFilters.bind(this);
+    this.handleClickRemoveUserData = this.handleClickRemoveUserData.bind(this);
     this.state = {
       dropdownOpen: false
     };
@@ -69,13 +72,16 @@ class UserFilter extends Component {
     this.props.resetFilters();
   };
 
+  handleClickRemoveUserData() {
+    this.props.resetUsers();
+  };
+
   render() {
     const {
-      filters: { searchingInput, filterMail, fromMoscow, searchCategory: { title: categoryTitle } },
-      dataLoaded, 
-      isLoading, 
-      loadError,
-      removeUserData,
+      filters: { searchingInput, filterMail, fromMoscow, searchCategory: { title: categoryTitle } }, 
+      isFetching,
+      fetchError,
+      dataLoaded,
       updateUserData
     } = this.props;
     const { dropdownOpen } = this.state;
@@ -140,20 +146,18 @@ class UserFilter extends Component {
             )}
           </InputGroup>
         </Col>
-        <Col sm="4" className={styles.uploadBtn}>
-          {dataLoaded && !isLoading && (
-            <>
-              <Button color="danger" onClick={removeUserData}>Очистить таблицу</Button>
-              <br />
-              <br />
-              <Button color="outline-danger" onClick={this.handleClickResetFilters}>Сбросить фильтры</Button>
-            </>
-          )}
-          {!dataLoaded && isLoading &&
+        <Col sm="2" className={styles.uploadBtn}>
+          {dataLoaded && !isFetching &&
+            <Button color="outline-danger" onClick={this.handleClickResetFilters}>Сбросить фильтры</Button>}
+        </Col>
+        <Col sm="2" className={styles.uploadBtn}>
+          {dataLoaded && !isFetching &&
+            <Button color="danger" onClick={this.handleClickRemoveUserData}>Очистить таблицу</Button>}
+          {isFetching &&
             <Button outline color="warning" disabled>Загрузка . . .</Button>}
-          {!dataLoaded && !isLoading &&
+          {!dataLoaded && !isFetching &&
             <Button outline color="info" onClick={updateUserData}>Загрузить данные</Button>}
-          {loadError &&
+          {fetchError &&
             <p className={styles.redText}>Ошибка загрузки :(</p>}
         </Col>
       </Row>
@@ -162,13 +166,16 @@ class UserFilter extends Component {
 };
 
 const mapStateToProps = state => ({
-  users: getUsers(state),
+  isFetching: getIsFetching(state)[FETCH_USERS],
+  dataLoaded: getAreUsersLoaded(state),
+  fetchError: getIsUsersFetchError(state),
   filters: getFilters(state)
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
     setUsers,
+    resetUsers,
     setFilters,
     resetFilters
   }, dispatch);

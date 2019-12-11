@@ -1,7 +1,13 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './common/reducers';
+import logger from 'common/middlewares/logger';
+import fetcher from 'common/middlewares/fetcher';
 
-const store = createStore(rootReducer);
+const middlewares = [fetcher, logger];
+const store = createStore(rootReducer, applyMiddleware(...middlewares));
+
+
+
 window.store = store; // TODO: dev only!
 
 export default store;

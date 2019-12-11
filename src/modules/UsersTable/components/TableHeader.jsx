@@ -9,7 +9,7 @@ import { userParamsNames } from 'common/services/mock';
 import { setFilters } from 'modules/UsersTable/actions/filters';
 
 import styles from 'modules/UsersTable/UsersTable.module.css';
-import { getFilters } from '../selectors/filters';
+import { getFilters } from 'modules/UsersTable/selectors/filters';
 
 const inverted = {
   asc: 'desc',
@@ -42,8 +42,7 @@ class TableHeader extends Component {
                   <span>{ title }</span>
                     {field===name && (
                       <>
-                        <span>{ direction==='asc' && <SortUp className={styles.sortIcon} /> }</span>
-                        <span>{ direction==='desc' && <SortDown className={styles.sortIcon} /> }</span>
+                        <span>{ direction==='asc' ? <SortUp className={styles.sortIcon} /> : <SortDown className={styles.sortIcon} /> }</span>
                       </>
                     )}
                 </th>

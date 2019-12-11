@@ -2,7 +2,6 @@ info: to start server, 'nodemon run src/server.js'
 В консоли: store.getState(); // при window.store = store;
 
 TODOs:
-!) Подрубить системник
 !?) RT?
 
-1) reselect -> createSelector
+1)

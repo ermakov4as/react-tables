@@ -4,19 +4,19 @@ import { bindActionCreators } from 'redux';
 import { Table, Spinner } from 'reactstrap';
 import debounce from 'lodash/debounce';
 
-import fetchData from 'common/services/api';
-import { GET_USERS } from 'common/services/urls';
-import reqParams from 'common/utils/reqParams';
 import { throttleWait } from 'common/services/mock';
 
 import TableHeader from './components/TableHeader';
 import styles from './UsersTable.module.css';
 import UserFilter from './components/UserFilter';
 
-import { setUsers, resetUsers } from './actions/users';
+import { setUsers, resetUsers, fetchUsers } from './actions/users';
 import { setFilters } from './actions/filters';
-import { getUsers } from './selectors/users';
+import { getUsers, getAreUsersLoaded } from './selectors/users';
 import { getFilters } from './selectors/filters';
+import { getIsFetching } from 'common/selectors/fetcher';
+
+import { FETCH_USERS } from 'common/constants/actionTypes';
 
 class UsersTable extends Component {
   constructor(props) {
@@ -25,11 +25,6 @@ class UsersTable extends Component {
     this.handleClickToUserTodos = this.handleClickToUserTodos.bind(this);
     this.searchWithDebounce = this.searchWithDebounce.bind(this);
     this.updateUserData = this.updateUserData.bind(this);
-    this.state = {
-      isLoading: false,
-      dataLoaded: false,
-      loadError: false
-    };
   };
 
   componentDidMount() {
@@ -52,52 +47,18 @@ class UsersTable extends Component {
 
   updateUserData() {
     const { filters: { field, direction, searchingInput, fromMoscow, filterMail, searchCategory: {name: searchCategoryName} } } = this.props;
-    this.setState({ 
-      isLoading: true,
-      dataLoaded: false,
-      loadError: false
-    });
-    const urlParams = reqParams([ {
-        name: 'searchField',
-        value: searchCategoryName,
-        notIncludeToReq: !searchingInput
-      }, {
-        name: 'search',
-        value: searchingInput,
-        notIncludeToReq: !searchingInput
-      }, {
-        name: 'field',
-        value: field
-      }, {
-        name: 'direction',
-        value: direction
-      }, {
-        name: 'fromMoscow',
-        value: fromMoscow,
-        notIncludeToReq: !fromMoscow
-      }, {
-        name: 'filterMail',
-        value: filterMail,
-        notIncludeToReq: !filterMail
-      } ]);
-    fetchData(`${GET_USERS}${urlParams}`).then(({ data: users, success }) => {
-      if (success && users) {
-        this.setState({
-          isLoading: false,
-          dataLoaded: true
-        });
-        this.props.setUsers(users);
-      } else {
-        this.setState({ 
-          isLoading: false,
-          loadError: true
-        });
-      };
-    });
+    const filterParams = {
+      searchField: searchCategoryName,
+      search: searchingInput,
+      field,
+      direction,
+      fromMoscow,
+      filterMail
+    };
+    this.props.fetchUsers(filterParams);
   };
 
   removeUserData() {
-    this.setState({ dataLoaded: false });
     this.props.resetUsers();
   };
 
@@ -114,16 +75,11 @@ class UsersTable extends Component {
   };
 
   render() {
-    const { isLoading, dataLoaded, loadError } = this.state;
-    const { users } = this.props;
+    const { users, isFetching, dataLoaded } = this.props;
     return (
       <>
         <h2 className={styles.tableHeader}>Таблица юзеров</h2>
         <UserFilter
-          dataLoaded={dataLoaded}
-          isLoading={isLoading}
-          loadError={loadError}
-          removeUserData={this.removeUserData}
           updateUserData={this.updateUserData}
         />
         <Table striped>
@@ -145,11 +101,11 @@ class UsersTable extends Component {
             }
           </tbody>
         </Table>
-          {!dataLoaded && !isLoading &&
+          {!dataLoaded && !isFetching &&
             <h6 className={styles.center}>Данные не загружены</h6>}
-          {dataLoaded && !isLoading && !users.length &&
+          {dataLoaded && !isFetching && !dataLoaded &&
             <h6 className={styles.center}>Ничего не найдено . . .</h6>}
-          {isLoading && (
+          {isFetching && (
             <div className={styles.center}>
               <Spinner size="xl" color="primary" />
             </div>
@@ -161,13 +117,14 @@ class UsersTable extends Component {
 
 const mapStateToProps = state => ({
   users: getUsers(state),
-  filters: getFilters(state)
+  isFetching: getIsFetching(state)[FETCH_USERS],
+  filters: getFilters(state),
+  dataLoaded: getAreUsersLoaded(state)
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
-    setUsers,
-    resetUsers,
+    setUsers, resetUsers, fetchUsers,
     setFilters
   }, dispatch);
 

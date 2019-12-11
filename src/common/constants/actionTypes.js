@@ -1,5 +1,16 @@
+// USERS
 export const SET_USERS = 'SET_USERS';
 export const RESET_USERS = 'RESET_USERS';
 
+export const FETCH_USERS = 'FETCH_USERS';
+export const FETCH_USERS_START = 'FETCH_USERS_START';
+export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
+export const FETCH_USERS_FAIL = 'FETCH_USERS_FAIL';
+
+// FILTERS
 export const SET_FILTERS = 'SET_FILTERS';
 export const RESET_FILTERS = 'RESET_FILTERS';
+
+// FETCHERS
+export const SET_FETCHERS = 'FETCHING_USERS';
+export const RESET_FETCHERS = 'NOT_FETCHING_USERS';

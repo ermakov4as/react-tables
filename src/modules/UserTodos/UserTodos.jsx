@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button , ListGroup, ListGroupItem } from 'reactstrap';
 
 import fetchData from 'common/services/api';
-import { GET_USER_TODOS } from 'common/services/urls';
+import { GET_USER_TODOS } from 'common/constants/urls';
 
 import styles from './UsersTodos.module.css';
 
