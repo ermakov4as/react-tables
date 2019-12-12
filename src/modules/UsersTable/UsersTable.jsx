@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 import { Table, Spinner } from 'reactstrap';
 import debounce from 'lodash/debounce';
 
+import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
+import { FETCH_USERS } from 'common/constants/actionTypes';
 import { throttleWait } from './constants/usersTable';
 
 import TableHeader from './components/TableHeader';
@@ -14,9 +16,7 @@ import { resetUsers, fetchUsers } from './actions/users';
 import { setFilters } from './actions/filters';
 import { getUsers } from './selectors/users';
 import { getFilters } from './selectors/filters';
-import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
 
-import { FETCH_USERS } from 'common/constants/actionTypes';
 
 class UsersTable extends Component {
   constructor(props) {

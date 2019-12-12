@@ -3,19 +3,18 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button , ListGroup, ListGroupItem, Spinner } from 'reactstrap';
 
+import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
+import { FETCH_TODOS } from 'common/constants/actionTypes';
 import { getTodos, getIsTodosFetchError } from './selectors/todos';
 import { fetchTodos } from './actions/todos';
-import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
 
 import styles from './UsersTodos.module.css';
-import { FETCH_TODOS } from 'common/constants/actionTypes';
 
 
 class UserTodos extends Component {
   constructor(props) {
     super(props);
     this.goBack = this.goBack.bind(this);
-    this.state = { todos: [] };
   };
 
   componentDidMount() {

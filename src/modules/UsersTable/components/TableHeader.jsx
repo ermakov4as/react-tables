@@ -4,11 +4,11 @@ import { bindActionCreators } from 'redux';
 
 import { ReactComponent as SortDown } from 'common/assets/sort-down.svg';
 
-import { userParamsNames } from './constants/tableComponents';
 import { setFilters } from 'modules/UsersTable/actions/filters';
+import { getFilters } from 'modules/UsersTable/selectors/filters';
+import { userParamsNames } from './constants/tableComponents';
 
 import styles from './TableHeader.module.css';
-import { getFilters } from 'modules/UsersTable/selectors/filters';
 
 const inverted = {
   asc: 'desc',

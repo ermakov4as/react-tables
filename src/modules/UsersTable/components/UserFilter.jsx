@@ -7,7 +7,6 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem 
 } from 'reactstrap';
 
-import { userParamsNames, mails } from './constants/tableComponents';
 
 import { resetUsers } from 'modules/UsersTable/actions/users';
 import { setFilters, resetFilters } from 'modules/UsersTable/actions/filters';
@@ -15,8 +14,9 @@ import { getIsUsersFetchError } from 'modules/UsersTable/selectors/users';
 import { getFilters, getAreFiltersChanged } from 'modules/UsersTable/selectors/filters';
 import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
 
-import styles from './UserFilter.module.css';
 import { FETCH_USERS } from 'common/constants/actionTypes';
+import styles from './UserFilter.module.css';
+import { userParamsNames, mails } from './constants/tableComponents';
 
 
 class UserFilter extends Component {
@@ -30,10 +30,21 @@ class UserFilter extends Component {
     this.handleInputSearchChange = this.handleInputSearchChange.bind(this);
     this.handleClickResetFilters = this.handleClickResetFilters.bind(this);
     this.handleClickRemoveUserData = this.handleClickRemoveUserData.bind(this);
+    this.handleGetTitle = this.handleGetTitle.bind(this);
     this.getTitle = this.getTitle.bind(this);
     this.state = {
       dropdownOpen: false
     };
+  };
+
+  getTitle(searchField) {
+    const userData = this.userParamsNames.find(currentUserData => currentUserData.name === searchField);
+    const { title } = userData;
+    return title;
+  };
+
+  handleGetTitle(searchField) {
+    return this.getTitle.bind(this, searchField);
   };
 
   toggleDropdown() {
@@ -74,12 +85,6 @@ class UserFilter extends Component {
     this.props.resetUsers();
   };
 
-  getTitle(searchField) {
-    const userData = userParamsNames.find(_userData => _userData.name === searchField);
-    const { title } = userData;
-    return title;
-  }
-
   render() {
     const {
       filters: { searchingInput, filterMail, fromMoscow, searchField }, 
@@ -95,7 +100,7 @@ class UserFilter extends Component {
         <Col sm="4">
           <InputGroup className={styles.paddingSm}>
             <InputGroupButtonDropdown addonType="prepend" isOpen={dropdownOpen} toggle={this.toggleDropdown}>
-              <DropdownToggle caret>{ this.getTitle(searchField) }</DropdownToggle>
+              <DropdownToggle caret>{ this.handleGetTitle(searchField) }</DropdownToggle>
               <DropdownMenu>
                 {
                   userParamsNames.map(({ name, title }) => {
