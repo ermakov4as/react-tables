@@ -1,0 +1,13 @@
+.sortIconDown, 
+.sortIconUp {
+  height: 18px;
+  width: auto;
+}
+
+.sortIconUp {
+  transform: rotate(180deg);
+}
+
+.pointer {
+  cursor: pointer;
+}

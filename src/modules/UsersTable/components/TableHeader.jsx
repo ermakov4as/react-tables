@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { ReactComponent as SortUp } from 'common/assets/sort-up.svg';
 import { ReactComponent as SortDown } from 'common/assets/sort-down.svg';
 
-import { userParamsNames } from 'common/services/mock';
+import { userParamsNames } from './constants/tableComponents';
 import { setFilters } from 'modules/UsersTable/actions/filters';
 
-import styles from 'modules/UsersTable/UsersTable.module.css';
+import styles from './TableHeader.module.css';
 import { getFilters } from 'modules/UsersTable/selectors/filters';
 
 const inverted = {
@@ -41,9 +40,7 @@ class TableHeader extends Component {
                 >
                   <span>{ title }</span>
                     {field===name && (
-                      <>
-                        <span>{ direction==='asc' ? <SortUp className={styles.sortIcon} /> : <SortDown className={styles.sortIcon} /> }</span>
-                      </>
+                      <span><SortDown className={direction==='asc' ? styles.sortIconUp : styles.sortIconDown} /></span>
                     )}
                 </th>
               );

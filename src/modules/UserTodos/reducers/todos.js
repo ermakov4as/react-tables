@@ -1,22 +1,19 @@
-import { RESET_USERS, FETCH_USERS_SUCCESS, FETCH_USERS_FAIL } from 'common/constants/actionTypes';
+import { FETCH_TODOS_SUCCESS, FETCH_TODOS_FAIL } from 'common/constants/actionTypes';
 
 const initialState = {
-  usersList: [],
+  todosList: [],
   error: null
 };
 
 export default (state = initialState, { type, data, error }) => {
   switch (type) {
-    case RESET_USERS: {
-      return initialState;
-    }
-    case FETCH_USERS_SUCCESS: {
+    case FETCH_TODOS_SUCCESS: {
       return {
         ...state,
-        usersList: data
+        todosList: data
       };
     }
-    case FETCH_USERS_FAIL: {
+    case FETCH_TODOS_FAIL: {
       return {
         ...state,
         error

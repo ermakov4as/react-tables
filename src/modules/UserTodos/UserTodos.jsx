@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import { Button , ListGroup, ListGroupItem } from 'reactstrap';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Button , ListGroup, ListGroupItem, Spinner } from 'reactstrap';
 
-import fetchData from 'common/services/api';
-import { GET_USER_TODOS } from 'common/constants/urls';
+import { getTodos, getIsTodosFetchError } from './selectors/todos';
+import { fetchTodos } from './actions/todos';
+import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
 
 import styles from './UsersTodos.module.css';
+import { FETCH_TODOS } from 'common/constants/actionTypes';
+
 
 class UserTodos extends Component {
   constructor(props) {
@@ -14,10 +19,12 @@ class UserTodos extends Component {
   };
 
   componentDidMount() {
+    this.getUserTodos();
+  };
+
+  getUserTodos() {
     const { match: { params: { id }}} = this.props;
-    fetchData(GET_USER_TODOS(id)).then(({ data, success }) => {
-      if (success) this.setState({ todos: data });
-    });
+    this.props.fetchTodos(id);
   };
 
   goBack() {
@@ -25,8 +32,13 @@ class UserTodos extends Component {
   };
   
   render() {
-    const { todos } = this.state;
-    const { match: { params: { id: routeId }}} = this.props;
+    const {
+      match: { params: { id: routeId } },
+      todos,
+      fetchError,
+      dataLoaded,
+      isFetching
+    } = this.props;
     return (
       <>
         <h4>UserTodos</h4>
@@ -38,15 +50,38 @@ class UserTodos extends Component {
         <ListGroup>
           {todos && todos.map(({id, title, completed}) => {
             return (
-              <ListGroupItem key={id} color={completed ? 'success' : 'danger'} className={styles.pointer}>
+              <ListGroupItem key={id+title} color={completed ? 'success' : 'danger'} className={styles.pointer}>
                 {title}
               </ListGroupItem>
             )
           })}
         </ListGroup>
+        {fetchError &&
+          <h6 className={styles.center}>Ошибка загрузки.</h6>}
+        {!dataLoaded && !isFetching &&
+          <h6 className={styles.center}>Данные не загружены</h6>}
+        {dataLoaded && !isFetching && !todos.length &&
+          <h6 className={styles.center}>Ничего не найдено . . .</h6>}
+        {isFetching && (
+          <div className={styles.center}>
+            <Spinner size="xl" color="primary" />
+          </div>
+        )}
       </>
     );
   };
 };
 
-export default UserTodos;
+const mapStateToProps = state => ({
+  todos: getTodos(state),
+  fetchError: getIsTodosFetchError(state),
+  isFetching: getIsFetching(state)[FETCH_TODOS],
+  dataLoaded: getIsFetched(state)[FETCH_TODOS]
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({
+    fetchTodos
+  }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserTodos);

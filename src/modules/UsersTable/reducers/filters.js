@@ -1,13 +1,12 @@
 import { SET_FILTERS, RESET_FILTERS } from 'common/constants/actionTypes';
-import { userParamsNames } from 'common/services/mock';
 
-const initialState = {
+export const initialState = { // TODO: или как-то менее криво можно?
   field: 'username',
   direction: 'desc',
   searchingInput: '',
   filterMail: '',
   fromMoscow: false,
-  searchCategory: userParamsNames[1]
+  searchField: 'username'
 };
 
 export default (state=initialState, { type, payload }) => {

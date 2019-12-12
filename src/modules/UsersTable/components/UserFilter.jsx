@@ -7,17 +7,15 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem 
 } from 'reactstrap';
 
-import { ReactComponent as Delete } from 'common/assets/delete.svg';
+import { userParamsNames, mails } from './constants/tableComponents';
 
-import { userParamsNames, mails } from 'common/services/mock';
-
-import { setUsers, resetUsers } from 'modules/UsersTable/actions/users';
+import { resetUsers } from 'modules/UsersTable/actions/users';
 import { setFilters, resetFilters } from 'modules/UsersTable/actions/filters';
-import { getIsUsersFetchError, getAreUsersLoaded } from 'modules/UsersTable/selectors/users';
-import { getFilters } from 'modules/UsersTable/selectors/filters';
-import { getIsFetching } from 'common/selectors/fetcher';
+import { getIsUsersFetchError } from 'modules/UsersTable/selectors/users';
+import { getFilters, getAreFiltersChanged } from 'modules/UsersTable/selectors/filters';
+import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
 
-import styles from 'modules/UsersTable/UsersTable.module.css';
+import styles from './UserFilter.module.css';
 import { FETCH_USERS } from 'common/constants/actionTypes';
 
 
@@ -32,6 +30,7 @@ class UserFilter extends Component {
     this.handleInputSearchChange = this.handleInputSearchChange.bind(this);
     this.handleClickResetFilters = this.handleClickResetFilters.bind(this);
     this.handleClickRemoveUserData = this.handleClickRemoveUserData.bind(this);
+    this.getTitle = this.getTitle.bind(this);
     this.state = {
       dropdownOpen: false
     };
@@ -47,25 +46,24 @@ class UserFilter extends Component {
     this.props.setFilters({ fromMoscow: !fromMoscow });
   };
 
-  handleClickSelectCategory(name) {
-    return this.selectCategory.bind(this, name);
+  handleClickSelectCategory(searchField) {
+    return this.selectCategory.bind(this, searchField); // TODO: когда нужна двухэтапность?
   };
 
-  selectCategory(name) {
-    const userData = userParamsNames.find(_userData => _userData.name === name);
-    this.props.setFilters({ searchCategory: userData });
+  selectCategory(searchField) {
+    this.props.setFilters({ searchField });
   };
 
-  handleClickSelectMail({ target: { value: mail }}) {
-    this.props.setFilters({ filterMail: mail });
+  handleClickSelectMail({ target: { value: filterMail }}) {
+    this.props.setFilters({ filterMail });
   };
 
   handleClickClearMailFilter() {
     this.props.setFilters({ filterMail: '' });
   };
 
-  handleInputSearchChange({ target: { value: userInput }}) {
-    this.props.setFilters({ searchingInput: userInput });
+  handleInputSearchChange({ target: { value: searchingInput }}) {
+    this.props.setFilters({ searchingInput });
   };
 
   handleClickResetFilters() {
@@ -76,21 +74,28 @@ class UserFilter extends Component {
     this.props.resetUsers();
   };
 
+  getTitle(searchField) {
+    const userData = userParamsNames.find(_userData => _userData.name === searchField);
+    const { title } = userData;
+    return title;
+  }
+
   render() {
     const {
-      filters: { searchingInput, filterMail, fromMoscow, searchCategory: { title: categoryTitle } }, 
+      filters: { searchingInput, filterMail, fromMoscow, searchField }, 
       isFetching,
       fetchError,
       dataLoaded,
+      filtersAreChanged,
       updateUserData
     } = this.props;
     const { dropdownOpen } = this.state;
     return (
       <Row className={styles.headerRow}>
         <Col sm="4">
-          <InputGroup className={styles.paddingSM}>
+          <InputGroup className={styles.paddingSm}>
             <InputGroupButtonDropdown addonType="prepend" isOpen={dropdownOpen} toggle={this.toggleDropdown}>
-              <DropdownToggle caret>{ categoryTitle }</DropdownToggle>
+              <DropdownToggle caret>{ this.getTitle(searchField) }</DropdownToggle>
               <DropdownMenu>
                 {
                   userParamsNames.map(({ name, title }) => {
@@ -116,38 +121,31 @@ class UserFilter extends Component {
                 checked={fromMoscow}
                 onChange={this.handleCheckboxFromMoscowChange} 
               />
-              {' '}
               Только из Москвы
             </Label>
           </FormGroup>
         </Col>
         <Col sm="4">
-          <InputGroup className={styles.paddingSM}>
+          <InputGroup className={styles.paddingSm}>
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Фильтр по почте: </InputGroupText>
             </InputGroupAddon>
             <Input type="select" name="select" value={filterMail} onChange={this.handleClickSelectMail}>
+              <option value=''>Почта не выбрана</option>
               {
-                mails.map((mail, index) => {
+                mails.map((mail) => {
                   return (
-                    <option key={mail} value={index===0 ? '' : mail} disabled={index===0}>
-                      { mail || 'Выберите почту' }
+                    <option key={mail} value={mail}>
+                      { mail }
                     </option>
                   );
                 })
               }
             </Input>
-            {filterMail && (
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>
-                  <Delete className={styles.deleteIcon} onClick={this.handleClickClearMailFilter} />
-                </InputGroupText>
-              </InputGroupAddon>
-            )}
           </InputGroup>
         </Col>
         <Col sm="2" className={styles.uploadBtn}>
-          {dataLoaded && !isFetching &&
+          {!filtersAreChanged &&
             <Button color="outline-danger" onClick={this.handleClickResetFilters}>Сбросить фильтры</Button>}
         </Col>
         <Col sm="2" className={styles.uploadBtn}>
@@ -167,14 +165,14 @@ class UserFilter extends Component {
 
 const mapStateToProps = state => ({
   isFetching: getIsFetching(state)[FETCH_USERS],
-  dataLoaded: getAreUsersLoaded(state),
+  dataLoaded: getIsFetched(state)[FETCH_USERS],
   fetchError: getIsUsersFetchError(state),
-  filters: getFilters(state)
+  filters: getFilters(state),
+  filtersAreChanged: getAreFiltersChanged(state)
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
-    setUsers,
     resetUsers,
     setFilters,
     resetFilters

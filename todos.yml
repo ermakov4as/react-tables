@@ -4,4 +4,20 @@ info: to start server, 'nodemon run src/server.js'
 TODOs:
 !?) RT?
 
-1)
+!++ 1) icons
+!++ 2) нет данных
+!++ 3) css разделить
+!++ 4) css избавиться от !important
+!++ 5) какие данные загружены - в structureSelector
+!++ 6) сбросить фильтры
+!++ 7) лишний setUsers
+!++ 8) searchcategory -. en only
+!++ 9) Корзинку с почты перекинуть на сброс фильтров
+!++ 10) Разнести mock по константам
+!++ 11) userTodos - на Redux
+!++ 12) axios
+!++ 13) axios -> cancelRequest
+14) создать ветку без debounce и с кнопкой поиска
+!++ 15) getIsDataFetched -> getIsFetched
+!++ 16) constants -> rename index.js
+17) Проверка ESLint - ubuntu

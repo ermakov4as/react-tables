@@ -2,4 +2,4 @@
 export const BASE_URL = 'http://localhost:8087';
 
 export const users = '/users';
-export const GET_USER_TODOS = id => `/users/${id}/todos`;
+export const todos = id => `/users/${id}/todos`;

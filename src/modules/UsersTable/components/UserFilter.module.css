@@ -1,0 +1,18 @@
+.uploadBtn {
+  text-align: right;
+}
+
+.headerRow {
+  padding: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.redText {
+  color: red;
+  font-weight: bolder;
+}
+
+.paddingSm {
+  padding: 5px;
+}

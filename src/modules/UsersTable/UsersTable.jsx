@@ -4,17 +4,17 @@ import { bindActionCreators } from 'redux';
 import { Table, Spinner } from 'reactstrap';
 import debounce from 'lodash/debounce';
 
-import { throttleWait } from 'common/services/mock';
+import { throttleWait } from './constants/usersTable';
 
 import TableHeader from './components/TableHeader';
 import styles from './UsersTable.module.css';
 import UserFilter from './components/UserFilter';
 
-import { setUsers, resetUsers, fetchUsers } from './actions/users';
+import { resetUsers, fetchUsers } from './actions/users';
 import { setFilters } from './actions/filters';
-import { getUsers, getAreUsersLoaded } from './selectors/users';
+import { getUsers } from './selectors/users';
 import { getFilters } from './selectors/filters';
-import { getIsFetching } from 'common/selectors/fetcher';
+import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
 
 import { FETCH_USERS } from 'common/constants/actionTypes';
 
@@ -33,11 +33,11 @@ class UsersTable extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { filters: { field, direction, fromMoscow, filterMail, searchingInput, searchCategory: { name: searchCategoryName } } } = this.props;
+    const { filters: { field, direction, fromMoscow, filterMail, searchingInput, searchField } } = this.props;
     const { filters: { field: prevField, direction: prevDirection, fromMoscow: prevFromMoscow, 
-      filterMail: prevFilterMail, searchingInput: prevSearchingInput, searchCategory: { name: prevSearchCategoryName } } } = prevProps;
+      filterMail: prevFilterMail, searchingInput: prevSearchingInput, searchField: prevsearchField } } = prevProps;
     if (field !== prevField || direction !== prevDirection || fromMoscow !== prevFromMoscow || filterMail !== prevFilterMail ||
-      searchCategoryName !== prevSearchCategoryName) {
+      searchField !== prevsearchField) {
         this.updateUserData();
     };
     if (searchingInput !== prevSearchingInput) {
@@ -46,9 +46,9 @@ class UsersTable extends Component {
   };
 
   updateUserData() {
-    const { filters: { field, direction, searchingInput, fromMoscow, filterMail, searchCategory: {name: searchCategoryName} } } = this.props;
+    const { filters: { field, direction, searchingInput, fromMoscow, filterMail, searchField } } = this.props;
     const filterParams = {
-      searchField: searchCategoryName,
+      searchField,
       search: searchingInput,
       field,
       direction,
@@ -78,7 +78,7 @@ class UsersTable extends Component {
     const { users, isFetching, dataLoaded } = this.props;
     return (
       <>
-        <h2 className={styles.tableHeader}>Таблица юзеров</h2>
+        <h2 className={styles.center}>Таблица юзеров</h2>
         <UserFilter
           updateUserData={this.updateUserData}
         />
@@ -103,7 +103,7 @@ class UsersTable extends Component {
         </Table>
           {!dataLoaded && !isFetching &&
             <h6 className={styles.center}>Данные не загружены</h6>}
-          {dataLoaded && !isFetching && !dataLoaded &&
+          {dataLoaded && !isFetching && !users.length &&
             <h6 className={styles.center}>Ничего не найдено . . .</h6>}
           {isFetching && (
             <div className={styles.center}>
@@ -119,12 +119,12 @@ const mapStateToProps = state => ({
   users: getUsers(state),
   isFetching: getIsFetching(state)[FETCH_USERS],
   filters: getFilters(state),
-  dataLoaded: getAreUsersLoaded(state)
+  dataLoaded: getIsFetched(state)[FETCH_USERS]
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({
-    setUsers, resetUsers, fetchUsers,
+    resetUsers, fetchUsers,
     setFilters
   }, dispatch);
 

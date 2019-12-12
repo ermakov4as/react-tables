@@ -1,25 +1,43 @@
+import axios from 'axios';
 import { BASE_URL } from 'common/constants/urls';
-import { SET_FETCHERS, RESET_FETCHERS } from 'common/constants/actionTypes';
+import { ADD_FETCHING, REMOVE_FETCHING, ADD_FETCHED, REMOVE_FETCHED } from 'common/constants/actionTypes';
 import reqParams from 'common/utils/reqParams';
 
+
+const CancelToken = axios.CancelToken;
+let cancel;
+
 export default () => next => action => {
-  const { type, payload, url } = action;
+  const { type, payload, url, remove } = action;
   if (!url) {
+    if (remove) {
+      next({ type: REMOVE_FETCHED, payload: remove });
+    }
     return next(action);
   };
 
-  next({ ...action, type: `${type}_START` });
-  next({ type: SET_FETCHERS, payload: type });
-  const fetchParams = reqParams(payload);
+  cancel && cancel();
 
-  return fetch(`${BASE_URL}${url}${fetchParams}`)
-    .then(response => response.json())
-    .then(data => {
+  next({ ...action, type: `${type}_START` });
+  next({ type: ADD_FETCHING, payload: type });
+  const fetchParams = payload ? reqParams(payload) : '';
+
+  return axios.get(`${BASE_URL}${url}${fetchParams}`, {
+    cancelToken: new CancelToken(function executor(c) {
+      // An executor function receives a cancel function as a parameter
+      cancel = c;
+    })
+  })
+    .then(({ data }) => {
       next({ type: `${type}_SUCCESS`, data });
-      next({ type: RESET_FETCHERS, payload: type });
+      next({ type: REMOVE_FETCHING, payload: type });
+      next({ type: ADD_FETCHED, payload: type });
     })
     .catch(error => {
+      if (axios.isCancel(error)) {
+        console.log('post Request canceled');
+      };
       next({ type: `${type}_FAIL`, error });
-      next({ type: RESET_FETCHERS, payload: type });
+      next({ type: REMOVE_FETCHING, payload: type });
     });
 };  
