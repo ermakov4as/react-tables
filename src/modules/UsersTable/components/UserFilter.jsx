@@ -30,21 +30,16 @@ class UserFilter extends Component {
     this.handleInputSearchChange = this.handleInputSearchChange.bind(this);
     this.handleClickResetFilters = this.handleClickResetFilters.bind(this);
     this.handleClickRemoveUserData = this.handleClickRemoveUserData.bind(this);
-    this.handleGetTitle = this.handleGetTitle.bind(this);
     this.getTitle = this.getTitle.bind(this);
     this.state = {
       dropdownOpen: false
     };
   };
 
-  getTitle(searchField) {
-    const userData = this.userParamsNames.find(currentUserData => currentUserData.name === searchField);
+  getTitle(searchField) { // TODO: ESLint -> Expected 'this' to be used by class method 'getTitle'.
+    const userData = userParamsNames.find(currentUserData => currentUserData.name === searchField);
     const { title } = userData;
     return title;
-  };
-
-  handleGetTitle(searchField) {
-    return this.getTitle.bind(this, searchField);
   };
 
   toggleDropdown() {
@@ -100,7 +95,7 @@ class UserFilter extends Component {
         <Col sm="4">
           <InputGroup className={styles.paddingSm}>
             <InputGroupButtonDropdown addonType="prepend" isOpen={dropdownOpen} toggle={this.toggleDropdown}>
-              <DropdownToggle caret>{ this.handleGetTitle(searchField) }</DropdownToggle>
+              <DropdownToggle caret>{ this.getTitle(searchField) }</DropdownToggle>
               <DropdownMenu>
                 {
                   userParamsNames.map(({ name, title }) => {
