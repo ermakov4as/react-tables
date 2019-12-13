@@ -15,25 +15,26 @@ app.use(function(req, res, next) {
 ////////////////////////////////////     LOCAL FUNCTIONS     ////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 const compareAsc = (a, b, field) => {
-  if (a[field] < b[field]) {
+  if (a[field].toLowerCase() < b[field].toLowerCase()) {
     return -1;
   }
-  if (a[field] > b[field]) {
+  if (a[field].toLowerCase() > b[field].toLowerCase()) {
     return 1;
   }
   return 0;
 };
 const compareDesc = (a, b, field) => {
-  if (a[field] < b[field]) {
+  if (a[field].toLowerCase() < b[field].toLowerCase()) {
     return 1;
   }
-  if (a[field] > b[field]) {
+  if (a[field].toLowerCase() > b[field].toLowerCase()) {
     return -1;
   }
   return 0;
 };
 
 const sortFunction = (arr, field, direction) => {
+  console.log(`sort: ${field} (${direction})`)
   if (direction === "asc") {
     return arr.sort((a, b) => compareAsc(a, b, field));
   }

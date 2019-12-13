@@ -23,7 +23,7 @@ export default () => next => action => {
   const fetchParams = payload ? reqParams(payload) : '';
 
   return axios.get(`${BASE_URL}${url}${fetchParams}`, {
-    cancelToken: new CancelToken(function executor(c) {
+    cancelToken: new CancelToken(c => {
       // An executor function receives a cancel function as a parameter
       cancel = c;
     })
@@ -36,8 +36,9 @@ export default () => next => action => {
     .catch(error => {
       if (axios.isCancel(error)) {
         console.log('post Request canceled');
+      } else {
+        next({ type: `${type}_FAIL`, error });
       };
-      next({ type: `${type}_FAIL`, error });
       next({ type: REMOVE_FETCHING, payload: type });
     });
 };  

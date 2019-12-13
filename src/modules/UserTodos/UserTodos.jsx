@@ -47,13 +47,11 @@ class UserTodos extends Component {
         </p>
         <Button outline color="danger" onClick={this.goBack} className={styles.btnMargin}>Назад</Button>
         <ListGroup>
-          {todos && todos.map(({id, title, completed}) => {
-            return (
-              <ListGroupItem key={id+title} color={completed ? 'success' : 'danger'} className={styles.pointer}>
-                {title}
-              </ListGroupItem>
-            )
-          })}
+          {todos && todos.map(({id, title, completed}) => (
+            <ListGroupItem key={id+title} color={completed ? 'success' : 'danger'} className={styles.pointer}>
+              {title}
+            </ListGroupItem>
+          ))}
         </ListGroup>
         {fetchError &&
           <h6 className={styles.center}>Ошибка загрузки.</h6>}

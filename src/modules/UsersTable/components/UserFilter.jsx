@@ -16,7 +16,7 @@ import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
 
 import { FETCH_USERS } from 'common/constants/actionTypes';
 import styles from './UserFilter.module.css';
-import { userParamsNames, mails } from './constants/tableComponents';
+import { userParamsMapping, mails } from 'modules/UsersTable/constants/usersTable.js';
 
 
 class UserFilter extends Component {
@@ -26,20 +26,12 @@ class UserFilter extends Component {
     this.handleCheckboxFromMoscowChange = this.handleCheckboxFromMoscowChange.bind(this);
     this.handleClickSelectCategory = this.handleClickSelectCategory.bind(this);
     this.handleClickSelectMail = this.handleClickSelectMail.bind(this);
-    this.handleClickClearMailFilter = this.handleClickClearMailFilter.bind(this);
     this.handleInputSearchChange = this.handleInputSearchChange.bind(this);
     this.handleClickResetFilters = this.handleClickResetFilters.bind(this);
     this.handleClickRemoveUserData = this.handleClickRemoveUserData.bind(this);
-    this.getTitle = this.getTitle.bind(this);
     this.state = {
       dropdownOpen: false
     };
-  };
-
-  getTitle(searchField) { // TODO: ESLint -> Expected 'this' to be used by class method 'getTitle'.
-    const userData = userParamsNames.find(currentUserData => currentUserData.name === searchField);
-    const { title } = userData;
-    return title;
   };
 
   toggleDropdown() {
@@ -53,7 +45,7 @@ class UserFilter extends Component {
   };
 
   handleClickSelectCategory(searchField) {
-    return this.selectCategory.bind(this, searchField); // TODO: когда нужна двухэтапность?
+    return this.selectCategory.bind(this, searchField);
   };
 
   selectCategory(searchField) {
@@ -62,10 +54,6 @@ class UserFilter extends Component {
 
   handleClickSelectMail({ target: { value: filterMail }}) {
     this.props.setFilters({ filterMail });
-  };
-
-  handleClickClearMailFilter() {
-    this.props.setFilters({ filterMail: '' });
   };
 
   handleInputSearchChange({ target: { value: searchingInput }}) {
@@ -95,14 +83,14 @@ class UserFilter extends Component {
         <Col sm="4">
           <InputGroup className={styles.paddingSm}>
             <InputGroupButtonDropdown addonType="prepend" isOpen={dropdownOpen} toggle={this.toggleDropdown}>
-              <DropdownToggle caret>{ this.getTitle(searchField) }</DropdownToggle>
+              <DropdownToggle caret>{ userParamsMapping[searchField] }</DropdownToggle>
               <DropdownMenu>
                 {
-                  userParamsNames.map(({ name, title }) => {
-                    return (
-                      <DropdownItem key={name} onClick={this.handleClickSelectCategory(name)}>{title}</DropdownItem>
-                    )}
-                  )
+                  Object.keys(userParamsMapping).map(name => (
+                    <DropdownItem key={name} onClick={this.handleClickSelectCategory(name)}>
+                      {userParamsMapping[name]}
+                    </DropdownItem>
+                  ))
                 }
               </DropdownMenu>
             </InputGroupButtonDropdown>
@@ -133,13 +121,11 @@ class UserFilter extends Component {
             <Input type="select" name="select" value={filterMail} onChange={this.handleClickSelectMail}>
               <option value=''>Почта не выбрана</option>
               {
-                mails.map((mail) => {
-                  return (
-                    <option key={mail} value={mail}>
-                      { mail }
-                    </option>
-                  );
-                })
+                mails.map((mail) => (
+                  <option key={mail} value={mail}>
+                    { mail }
+                  </option>
+                ))
               }
             </Input>
           </InputGroup>
@@ -149,12 +135,11 @@ class UserFilter extends Component {
             <Button color="outline-danger" onClick={this.handleClickResetFilters}>Сбросить фильтры</Button>}
         </Col>
         <Col sm="2" className={styles.uploadBtn}>
-          {dataLoaded && !isFetching &&
+          {(!dataLoaded && !isFetching)
+            ?
+            <Button outline color="info" onClick={updateUserData}>Загрузить данные</Button>
+            :
             <Button color="danger" onClick={this.handleClickRemoveUserData}>Очистить таблицу</Button>}
-          {isFetching &&
-            <Button outline color="warning" disabled>Загрузка . . .</Button>}
-          {!dataLoaded && !isFetching &&
-            <Button outline color="info" onClick={updateUserData}>Загрузить данные</Button>}
           {fetchError &&
             <p className={styles.redText}>Ошибка загрузки :(</p>}
         </Col>

@@ -84,7 +84,7 @@ class UsersTable extends Component {
         />
         <Table striped>
           <TableHeader />
-          <tbody>
+          <tbody className={styles.tableScroll}>
             {
               users.map(({id, name, username, email, city, street}, index) => {
                 return (

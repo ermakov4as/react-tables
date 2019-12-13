@@ -6,7 +6,7 @@ import { ReactComponent as SortDown } from 'common/assets/sort-down.svg';
 
 import { setFilters } from 'modules/UsersTable/actions/filters';
 import { getFilters } from 'modules/UsersTable/selectors/filters';
-import { userParamsNames } from './constants/tableComponents';
+import { userParamsMapping } from 'modules/UsersTable/constants/usersTable.js';
 
 import styles from './TableHeader.module.css';
 
@@ -14,6 +14,11 @@ const inverted = {
   asc: 'desc',
   desc: 'asc'
 };
+
+const iconsMapping = {
+  'asc': styles.sortIconUp,
+  'desc': styles.sortIconDown
+}
 
 class TableHeader extends Component {
   handleClickColumnCreator(field, direction) {
@@ -31,20 +36,18 @@ class TableHeader extends Component {
         <tr>
           <th>#</th>
           {
-            userParamsNames.map(({ name, title }) => {
-              return (
-                <th 
-                  onClick={this.handleClickColumnCreator(name, field===name ? inverted[direction] : 'desc')}
-                  className={styles.pointer}
-                  key={name}
-                >
-                  <span>{ title }</span>
-                    {field===name && (
-                      <span><SortDown className={direction==='asc' ? styles.sortIconUp : styles.sortIconDown} /></span>
-                    )}
-                </th>
-              );
-            })
+            Object.keys(userParamsMapping).map(name => (
+              <th 
+                onClick={this.handleClickColumnCreator(name, field===name ? inverted[direction] : 'desc')}
+                className={styles.pointer}
+                key={name}
+              >
+                <span>{ userParamsMapping[name] }</span>
+                  {field===name && (
+                    <span><SortDown className={iconsMapping[direction]} /></span>
+                  )}
+              </th>
+            ))
           }
         </tr>
       </thead>
