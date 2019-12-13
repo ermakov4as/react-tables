@@ -1,3 +1,12 @@
+const combineParams = (params) => {
+  const localReqParams = params.filter(({ notIncludeToReq }) =>  !notIncludeToReq );
+  let localParams = localReqParams ? '?' : '';
+  localReqParams.forEach(({ name, value }) => {
+    localParams += (`${name}=${value}&`);
+  });
+  return localParams.slice(0, -1);
+};
+
 const reqParams = ({ searchField, search, field, direction, fromMoscow, filterMail }) => {
   const urlParams = combineParams([ {
     name: 'searchField',
@@ -26,12 +35,3 @@ const reqParams = ({ searchField, search, field, direction, fromMoscow, filterMa
 };
 
 export default reqParams;
-
-const combineParams = (params) => {
-  const localReqParams = params.filter(({ notIncludeToReq }) =>  !notIncludeToReq );
-  let localParams = localReqParams ? '?' : '';
-  localReqParams.forEach(({ name, value }) => {
-    localParams += (`${name}=${value}&`);
-  });
-  return localParams.slice(0, -1);
-}

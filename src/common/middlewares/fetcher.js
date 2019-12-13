@@ -4,7 +4,7 @@ import { ADD_FETCHING, REMOVE_FETCHING, ADD_FETCHED, REMOVE_FETCHED } from 'comm
 import reqParams from 'common/utils/reqParams';
 
 
-const CancelToken = axios.CancelToken;
+const { CancelToken } = axios;
 let cancel;
 
 export default () => next => action => {
@@ -16,7 +16,7 @@ export default () => next => action => {
     return next(action);
   };
 
-  cancel && cancel();
+  if (cancel) cancel();
 
   next({ ...action, type: `${type}_START` });
   next({ type: ADD_FETCHING, payload: type });
@@ -35,6 +35,7 @@ export default () => next => action => {
     })
     .catch(error => {
       if (axios.isCancel(error)) {
+        // eslint-disable-next-line
         console.log('post Request canceled');
       } else {
         next({ type: `${type}_FAIL`, error });

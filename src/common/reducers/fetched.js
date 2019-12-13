@@ -7,10 +7,8 @@ export default (state = initialState, { type, payload }) => {
     case ADD_FETCHED: {
       if (state.indexOf(payload) === -1) {
         return [...state, payload];
-      } else {
-        return state;
       };
-      
+      return state; 
     }
     case REMOVE_FETCHED: {
       return state.filter(item => item !== payload)

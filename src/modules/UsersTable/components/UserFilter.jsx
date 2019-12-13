@@ -7,7 +7,6 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem 
 } from 'reactstrap';
 
-
 import { resetUsers } from 'modules/UsersTable/actions/users';
 import { setFilters, resetFilters } from 'modules/UsersTable/actions/filters';
 import { getIsUsersFetchError } from 'modules/UsersTable/selectors/users';
@@ -15,8 +14,8 @@ import { getFilters, getAreFiltersChanged } from 'modules/UsersTable/selectors/f
 import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
 
 import { FETCH_USERS } from 'common/constants/actionTypes';
+import { userParamsMapping, mails } from 'modules/UsersTable/constants/usersTable';
 import styles from './UserFilter.module.css';
-import { userParamsMapping, mails } from 'modules/UsersTable/constants/usersTable.js';
 
 
 class UserFilter extends Component {

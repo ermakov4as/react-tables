@@ -6,7 +6,7 @@ import { ReactComponent as SortDown } from 'common/assets/sort-down.svg';
 
 import { setFilters } from 'modules/UsersTable/actions/filters';
 import { getFilters } from 'modules/UsersTable/selectors/filters';
-import { userParamsMapping } from 'modules/UsersTable/constants/usersTable.js';
+import { userParamsMapping } from 'modules/UsersTable/constants/usersTable';
 
 import styles from './TableHeader.module.css';
 
