@@ -3,6 +3,7 @@
 }
 
 .headerRow {
+  flex-shrink: 0;
   padding: 10px 30px;
 }
 

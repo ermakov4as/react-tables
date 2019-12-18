@@ -6,13 +6,41 @@
   text-align: center;
 }
 
-.table {
-  width: 100%;
+.tableUsers {
   table-layout: fixed;
+  width: 100%;
 }
 
-.tableScroll {
-  border: 2px solid red;
-  overflow-y: scroll;
-  overflow-x: hidden;
+.tableUsers, 
+.tdUsers {
+  border-collapse: collapse;
+  /* border: 1px solid #000; */
+}
+
+.tdUsers {
+  width: 16.67%; /* to enable "word-break: break-all" */
+  padding: 5px;
+  word-break: break-all;
+  text-align: center;
+  border-bottom: none;
+  border-left: none;
+}
+
+.tbodyUsers {
+  display: block; /* to enable vertical scrolling */
+  overflow-y: scroll; /* keeps the scrollbar even if it doesn't need it; display purpose */
+}
+
+.trUsers {
+  display: table; /* display purpose; th's border */
+  width: 100%;
+  box-sizing: border-box; /* because of the border (Chrome needs this line, but not FF) */
+}
+
+.tableColumnSm {
+  width: 3%;
+}
+
+.tableColumnL {
+  width: 30%;
 }

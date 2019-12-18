@@ -11,3 +11,29 @@
 .pointer {
   cursor: pointer;
 }
+
+.theadUsers {
+  display: table; /* to take the same width as tr */
+  width: calc(100% - 17px); /* - 17px because of the scrollbar width */
+}
+
+.thUsers {
+  width: 16.67%; /* to enable "word-break: break-all" */
+  padding: 5px;
+  word-break: break-all;
+  text-align: center;
+}
+
+.trUsers {
+  display: table; /* display purpose; th's border */
+  width: 100%;
+  box-sizing: border-box; /* because of the border (Chrome needs this line, but not FF) */
+}
+
+.tableColumnSm {
+  width: 3%;
+}
+
+.tableColumnL {
+  width: 30%;
+}

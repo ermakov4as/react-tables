@@ -7,9 +7,11 @@ import UsersTable from './modules/UsersTable/UsersTable';
 import UserTodos from './modules/UserTodos/UserTodos';
 
 import store from './store';
+import styles from './App.module.css'
 
 const App = () => (
-  <Provider store={store}>
+  <div className={styles.container}>
+    <Provider store={store}>
     <Router>
       <Switch>
         <Route exact path='/' component={HomeInfo} />
@@ -18,6 +20,7 @@ const App = () => (
       </Switch>
     </Router>
   </Provider>
+  </div>
 );
 
 export default App;

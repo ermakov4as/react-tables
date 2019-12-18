@@ -21,10 +21,10 @@ TODOs:
 !++ 15) getIsDataFetched -> getIsFetched
 !++ 16) constants -> rename index.js
 !++ 17) Проверка ESLint - ubuntu
-18) ESLint -> TODO
---- 19) scroll таблицы
+!++ 18) ESLint -> TODO
+- 19) scroll таблицы
 !++ 20) убрать кнопку загрузка...
---- 21) layout (table) - fixed
+!++ 21) layout (table) - fixed
 !++ 22) sort -> desc
 !++ 23) constants
 !++ 24) userParamsMapping

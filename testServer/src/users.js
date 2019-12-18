@@ -78,5 +78,37 @@ module.exports = [
     email: "Masha15@yandex.ru",
     city: "Ковров",
     street: "Красивая 13"
+  },
+  {
+    id: 11,
+    name: "2Олег Никифоров",
+    username: "Olezha",
+    email: "olezha@yandex.ru",
+    city: "Киев",
+    street: "Пустынная 10"
+  },
+  {
+    id: 12,
+    name: "2Олег Пельмешкин",
+    username: "Pelmen",
+    email: "Pelmen@rambler.ru",
+    city: "Киев",
+    street: "Проспект Кутузова 3"
+  },
+  {
+    id: 13,
+    name: "2Илья Денежкин",
+    username: "bwerewol",
+    email: "yaProgrammist@rambler.ru",
+    city: "Сыктывкар",
+    street: "Ивановская 182"
+  },
+  {
+    id: 14,
+    name: "2Мария Большакова",
+    username: "Masha",
+    email: "Masha15@yandex.ru",
+    city: "Ковров",
+    street: "Красивая 13"
   }
 ];

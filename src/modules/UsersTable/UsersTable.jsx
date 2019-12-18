@@ -82,19 +82,19 @@ class UsersTable extends Component {
         <UserFilter
           updateUserData={this.updateUserData}
         />
-        <Table striped>
+        <Table striped className={styles.tableUsers}>
           <TableHeader />
-          <tbody className={styles.tableScroll}>
+          <tbody className={styles.tbodyUsers}>
             {
               users.map(({id, name, username, email, city, street}, index) => {
                 return (
-                  <tr key={id} onClick={this.handleClickToUserTodos(id)} className={styles.pointer}>
-                    <td>{index+1}</td>
-                    <td>{name}</td>
-                    <td>{username}</td>
-                    <td>{email}</td>
-                    <td>{city}</td>
-                    <td>{street}</td>
+                  <tr key={id} onClick={this.handleClickToUserTodos(id)} className={`${styles.pointer} ${styles.trUsers}`}>
+                    <td className={`${styles.tdUsers} ${styles.tableColumnSm}`}>{index+1}</td>
+                    <td className={styles.tdUsers}>{name}</td>
+                    <td className={styles.tdUsers}>{username}</td>
+                    <td className={`${styles.tdUsers} ${styles.tableColumnL}`}>{email}</td>
+                    <td className={styles.tdUsers}>{city}</td>
+                    <td className={styles.tdUsers}>{street}</td>
                   </tr>
                 );
               })

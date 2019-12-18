@@ -13,12 +13,14 @@ export default (state = initialState, { type, data, error }) => {
     case FETCH_USERS_SUCCESS: {
       return {
         ...state,
-        usersList: data
+        usersList: data,
+        error: null
       };
     }
     case FETCH_USERS_FAIL: {
       return {
         ...state,
+        usersList: [],
         error
       };
     }
