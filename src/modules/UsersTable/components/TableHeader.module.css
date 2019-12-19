@@ -15,6 +15,7 @@
 .theadUsers {
   display: table; /* to take the same width as tr */
   width: calc(100% - 17px); /* - 17px because of the scrollbar width */
+  overflow-y: scroll;
 }
 
 .thUsers {

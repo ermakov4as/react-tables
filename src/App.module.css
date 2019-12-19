@@ -5,8 +5,8 @@ html, body {
 .container {
   height: 100%;
   display: flex;
-  width: 1280px;
-  margin: 0 auto;
+  /* width: 1280px;
+  margin: 0 auto; */
   flex-direction: column;
   flex: 1 1;
 }

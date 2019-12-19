@@ -33,15 +33,10 @@ class TableHeader extends Component {
   render() {
     const { filters: { field, direction } } = this.props;
     const columnSmClass = cx(styles.thUsers, styles.tableColumnSm);
-    /* const columnSmClass = cx({
-      [styles.thUsers]: true,
-      [styles.tableColumnSm]: true
-    }); */
     return (
       <thead className={styles.theadUsers}>
         <tr className={styles.trUsers}>
           <th className={columnSmClass}>#</th>
-          {/* <th className={`${styles.thUsers} ${styles.tableColumnSm}`}>#</th> */}
           {
             Object.keys(userParamsMapping).map(name => {
               const columnClass = cx({

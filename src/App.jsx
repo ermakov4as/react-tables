@@ -7,19 +7,19 @@ import UsersTable from './modules/UsersTable/UsersTable';
 import UserTodos from './modules/UserTodos/UserTodos';
 
 import store from './store';
-import styles from './App.module.css'
+import styles from './App.module.css';
 
 const App = () => (
   <div className={styles.container}>
     <Provider store={store}>
-    <Router>
-      <Switch>
-        <Route exact path='/' component={HomeInfo} />
-        <Route exact path='/users' component={UsersTable} />
-        <Route exact path='/users/:id/todos' component={UserTodos} />
-      </Switch>
-    </Router>
-  </Provider>
+      <Router>
+        <Switch>
+          <Route exact path='/' component={HomeInfo} />
+          <Route exact path='/users' component={UsersTable} />
+          <Route exact path='/users/:id/todos' component={UserTodos} />
+        </Switch>
+      </Router>
+    </Provider>
   </div>
 );
 
