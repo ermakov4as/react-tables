@@ -29,7 +29,8 @@ class UserFilter extends Component {
     this.handleClickResetFilters = this.handleClickResetFilters.bind(this);
     this.handleClickRemoveUserData = this.handleClickRemoveUserData.bind(this);
     this.state = {
-      dropdownOpen: false
+      dropdownOpen: false/* ,
+      tmpSearchingInput: '' */
     };
   };
 
@@ -55,7 +56,7 @@ class UserFilter extends Component {
     this.props.setFilters({ filterMail });
   };
 
-  handleInputSearchChange({ target: { value: searchingInput }}) {
+  handleInputSearchChange({ target: { value: searchingInput } }) {
     this.props.setFilters({ searchingInput });
   };
 
@@ -100,6 +101,9 @@ class UserFilter extends Component {
               onChange={this.handleInputSearchChange} 
               placeholder="Введите для поиска" 
             />
+            <InputGroupAddon addonType="append">
+              <Button color="secondary" onClick={updateUserData}>Поиск</Button>
+            </InputGroupAddon>
           </InputGroup>
           <FormGroup check>
             <Label check>
@@ -112,7 +116,8 @@ class UserFilter extends Component {
             </Label>
           </FormGroup>
         </Col>
-        <Col sm="4">
+        <Col sm="1"></Col>
+        <Col sm="3">
           <InputGroup className={styles.paddingSm}>
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Фильтр по почте: </InputGroupText>

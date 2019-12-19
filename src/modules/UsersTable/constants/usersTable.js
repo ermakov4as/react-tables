@@ -1,5 +1,3 @@
-export const throttleWait = 250;
-
 export const userParamsMapping = {
   'name': 'Имя',
   'username': 'Логин',

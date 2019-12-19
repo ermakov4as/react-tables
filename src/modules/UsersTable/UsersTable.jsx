@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Table, Spinner } from 'reactstrap';
-import debounce from 'lodash/debounce';
 
 import { getIsFetching, getIsFetched } from 'common/selectors/fetcher';
 import { FETCH_USERS } from 'common/constants/actionTypes';
-import { throttleWait } from './constants/usersTable';
 
 import TableHeader from './components/TableHeader';
 import styles from './UsersTable.module.css';
@@ -23,25 +21,20 @@ class UsersTable extends Component {
     super(props);
     this.removeUserData = this.removeUserData.bind(this);
     this.handleClickToUserTodos = this.handleClickToUserTodos.bind(this);
-    this.searchWithDebounce = this.searchWithDebounce.bind(this);
     this.updateUserData = this.updateUserData.bind(this);
   };
 
   componentDidMount() {
-    this.searchWithDebounce = debounce(this.searchWithDebounce, throttleWait);
     this.updateUserData();
   };
 
   componentDidUpdate(prevProps) {
-    const { filters: { field, direction, fromMoscow, filterMail, searchingInput, searchField } } = this.props;
+    const { filters: { field, direction, fromMoscow, filterMail, searchField } } = this.props;
     const { filters: { field: prevField, direction: prevDirection, fromMoscow: prevFromMoscow, 
-      filterMail: prevFilterMail, searchingInput: prevSearchingInput, searchField: prevsearchField } } = prevProps;
+      filterMail: prevFilterMail, searchField: prevsearchField } } = prevProps;
     if (field !== prevField || direction !== prevDirection || fromMoscow !== prevFromMoscow || filterMail !== prevFilterMail ||
       searchField !== prevsearchField) {
         this.updateUserData();
-    };
-    if (searchingInput !== prevSearchingInput) {
-      this.searchWithDebounce();
     };
   };
 
@@ -68,10 +61,6 @@ class UsersTable extends Component {
 
   toUserTodos(id) {
     this.props.history.push(`/users/${id}/todos`);
-  };
-
-  searchWithDebounce() { 
-    this.updateUserData();
   };
 
   render() {

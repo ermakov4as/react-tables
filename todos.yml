@@ -17,7 +17,7 @@ TODOs:
 !++ 11) userTodos - на Redux
 !++ 12) axios
 !++ 13) axios -> cancelRequest
-14) создать ветку без debounce и с кнопкой поиска
+!++ 14) создать ветку без debounce и с кнопкой поиска
 !++ 15) getIsDataFetched -> getIsFetched
 !++ 16) constants -> rename index.js
 !++ 17) Проверка ESLint - ubuntu
