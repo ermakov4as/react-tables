@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { 
@@ -18,7 +18,7 @@ import { userParamsMapping, mails } from 'modules/UsersTable/constants/usersTabl
 import styles from './UserFilter.module.css';
 
 
-class UserFilter extends Component {
+class UserFilter extends PureComponent {
   constructor(props) {
     super(props);
     this.toggleDropdown = this.toggleDropdown.bind(this);

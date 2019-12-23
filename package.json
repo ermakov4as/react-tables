@@ -45,7 +45,9 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint-plugin-react-hooks": "^2.3.0"
+  },
   "resolutions": {
     "eslint": "^6.7.1"
   }

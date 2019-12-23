@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Table, Spinner } from 'reactstrap';
@@ -16,13 +16,14 @@ import { getUsers } from './selectors/users';
 import { getFilters } from './selectors/filters';
 
 
-class UsersTable extends Component {
+class UsersTable extends PureComponent {
   constructor(props) {
     super(props);
     this.removeUserData = this.removeUserData.bind(this);
     this.handleClickToUserTodos = this.handleClickToUserTodos.bind(this);
     this.updateUserData = this.updateUserData.bind(this);
   };
+
 
   componentDidMount() {
     this.updateUserData();

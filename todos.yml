@@ -1,31 +1,8 @@
 info: to start server, 'nodemon run src/server.js'
 В консоли: store.getState(); // при window.store = store;
+Производительность: a) (shouldComponentUpdate/PureComponent)/(mose(params)/mose), b) reselect - current selectors
 
 TODOs:
 !?) RT?
 
-!++ 1) icons
-!++ 2) нет данных
-!++ 3) css разделить
-!++ 4) css избавиться от !important
-!++ 5) какие данные загружены - в structureSelector
-!++ 6) сбросить фильтры
-!++ 7) лишний setUsers
-!++ 8) searchcategory -. en only
-!++ 9) Корзинку с почты перекинуть на сброс фильтров
-!++ 10) Разнести mock по константам
-!++ 11) userTodos - на Redux
-!++ 12) axios
-!++ 13) axios -> cancelRequest
-!++ 14) создать ветку без debounce и с кнопкой поиска
-!++ 15) getIsDataFetched -> getIsFetched
-!++ 16) constants -> rename index.js
-!++ 17) Проверка ESLint - ubuntu
-!++ 18) ESLint -> TODO
-!++ 19) scroll таблицы
-!++ 20) убрать кнопку загрузка...
-!++ 21) layout (table) - fixed
-!++ 22) sort -> desc
-!++ 23) constants
-!++ 24) userParamsMapping
-!++ 25) fix scroll
+1) Покомпонентный перевод на функциональные блоки
