@@ -17,7 +17,6 @@ function UserTodos() {
   const { id } = useParams();
 
   const dispatch = useDispatch();
-
   const todos = useSelector(state => getTodos(state));
   const fetchError = useSelector(state => getIsTodosFetchError(state));
   const isFetching = useSelector(state => getIsFetching(state)[FETCH_TODOS]);

@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import cx from "classnames";
 
 import { ReactComponent as SortDown } from 'common/assets/sort-down.svg';
@@ -21,56 +20,44 @@ const iconsMapping = {
   'desc': styles.sortIconDown
 }
 
-class TableHeader extends Component {
-  handleClickColumnCreator(field, direction) {
-    return this.sortData.bind(this, field, direction);
+function TableHeader() {
+  const dispatch = useDispatch();
+  const { field, direction } = useSelector(state => getFilters(state));
+
+  const sortData = (field, direction) => {
+    dispatch(setFilters({ direction, field }));
   };
 
-  sortData(field, direction) {
-    this.props.setFilters({ direction, field });
-  };
-  
-  render() {
-    const { filters: { field, direction } } = this.props;
-    const columnSmClass = cx(styles.thUsers, styles.tableColumnSm);
-    return (
-      <thead className={styles.theadUsers}>
-        <tr className={styles.trUsers}>
-          <th className={columnSmClass}>#</th>
-          {
-            Object.keys(userParamsMapping).map(name => {
-              const columnClass = cx({
-                [styles.pointer]: true,
-                [styles.thUsers]: true,
-                [styles.tableColumnL]: name === "email"
-              })
-              return (
-                <th
-                  onClick={this.handleClickColumnCreator(name, field === name ? inverted[direction] : 'desc')}
-                  className={columnClass}
-                  key={name}
-                >
-                  <span>{userParamsMapping[name]}</span>
-                  {field === name && (
-                    <span><SortDown className={iconsMapping[direction]} /></span>
-                  )}
-                </th>
-              )
+  const columnSmClass = cx(styles.thUsers, styles.tableColumnSm);
+    
+  return (
+    <thead className={styles.theadUsers}>
+      <tr className={styles.trUsers}>
+        <th className={columnSmClass}>#</th>
+        {
+          Object.keys(userParamsMapping).map(name => {
+            const columnClass = cx({
+              [styles.pointer]: true,
+              [styles.thUsers]: true,
+              [styles.tableColumnL]: name === "email"
             })
-          }
-        </tr>
-      </thead>
-    );
-  };
+            return (
+              <th
+                onClick={sortData(name, field === name ? inverted[direction] : 'desc')}
+                className={columnClass}
+                key={name}
+              >
+                <span>{userParamsMapping[name]}</span>
+                {field === name && (
+                  <span><SortDown className={iconsMapping[direction]} /></span>
+                )}
+              </th>
+            )
+          })
+        }
+      </tr>
+    </thead>
+  );
 };
 
-const mapStateToProps = state => ({
-  filters: getFilters(state)
-});
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({
-    setFilters,
-  }, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(TableHeader);
+export default TableHeader;
