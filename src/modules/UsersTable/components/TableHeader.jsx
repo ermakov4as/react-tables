@@ -20,11 +20,11 @@ const iconsMapping = {
   'desc': styles.sortIconDown
 }
 
-function TableHeader() {
+const TableHeader = () => {
   const dispatch = useDispatch();
   const { field, direction } = useSelector(state => getFilters(state));
 
-  const sortData = (field, direction) => {
+  const sortData = (field, direction) => () => {
     dispatch(setFilters({ direction, field }));
   };
 

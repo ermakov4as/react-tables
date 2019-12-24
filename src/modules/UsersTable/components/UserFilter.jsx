@@ -1,6 +1,5 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { 
   Row, Col, Button, Label, FormGroup,
   InputGroup, InputGroupAddon, Input, InputGroupButtonDropdown, InputGroupText,
@@ -18,153 +17,116 @@ import { userParamsMapping, mails } from 'modules/UsersTable/constants/usersTabl
 import styles from './UserFilter.module.css';
 
 
-class UserFilter extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.toggleDropdown = this.toggleDropdown.bind(this);
-    this.handleCheckboxFromMoscowChange = this.handleCheckboxFromMoscowChange.bind(this);
-    this.handleClickSelectCategory = this.handleClickSelectCategory.bind(this);
-    this.handleClickSelectMail = this.handleClickSelectMail.bind(this);
-    this.handleInputSearchChange = this.handleInputSearchChange.bind(this);
-    this.handleClickResetFilters = this.handleClickResetFilters.bind(this);
-    this.handleClickRemoveUserData = this.handleClickRemoveUserData.bind(this);
-    this.state = {
-      dropdownOpen: false/* ,
-      tmpSearchingInput: '' */
-    };
+const UserFilter = ({ updateUserData }) => {
+  const dispatch = useDispatch();
+  const isFetching = useSelector(state => getIsFetching(state)[FETCH_USERS]);
+  const dataLoaded = useSelector(state => getIsFetched(state)[FETCH_USERS]);
+  const fetchError = useSelector(state => getIsUsersFetchError(state));
+  const filters = useSelector(state => getFilters(state));
+  const filtersAreChanged = useSelector(state => getAreFiltersChanged(state));
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { searchingInput, filterMail, fromMoscow, searchField } = filters;
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
   };
 
-  toggleDropdown() {
-    const { dropdownOpen } = this.state;
-    this.setState({ dropdownOpen: !dropdownOpen });
+  const handleCheckboxFromMoscowChange = () => {
+    dispatch(setFilters({ fromMoscow: !fromMoscow }));
   };
 
-  handleCheckboxFromMoscowChange() {
-    const { filters: { fromMoscow } } = this.props;
-    this.props.setFilters({ fromMoscow: !fromMoscow });
+  const handleClickSelectCategory = (searchField) => () => {
+    dispatch(setFilters({ searchField }));
   };
 
-  handleClickSelectCategory(searchField) {
-    return this.selectCategory.bind(this, searchField);
+  const handleClickSelectMail = ({ target: { value: filterMail }}) => {
+    dispatch(setFilters({ filterMail }));
   };
 
-  selectCategory(searchField) {
-    this.props.setFilters({ searchField });
+  const handleInputSearchChange = ({ target: { value: searchingInput } }) => {
+    dispatch(setFilters({ searchingInput }));
   };
 
-  handleClickSelectMail({ target: { value: filterMail }}) {
-    this.props.setFilters({ filterMail });
+  const handleClickResetFilters = () => {
+    dispatch(resetFilters());
   };
 
-  handleInputSearchChange({ target: { value: searchingInput } }) {
-    this.props.setFilters({ searchingInput });
+  const handleClickRemoveUserData = () => {
+    dispatch(resetUsers());
   };
-
-  handleClickResetFilters() {
-    this.props.resetFilters();
-  };
-
-  handleClickRemoveUserData() {
-    this.props.resetUsers();
-  };
-
-  render() {
-    const {
-      filters: { searchingInput, filterMail, fromMoscow, searchField }, 
-      isFetching,
-      fetchError,
-      dataLoaded,
-      filtersAreChanged,
-      updateUserData
-    } = this.props;
-    const { dropdownOpen } = this.state;
-    return (
-      <Row className={styles.headerRow}>
-        <Col sm="4">
-          <InputGroup className={styles.paddingSm}>
-            <InputGroupButtonDropdown addonType="prepend" isOpen={dropdownOpen} toggle={this.toggleDropdown}>
-              <DropdownToggle caret>{ userParamsMapping[searchField] }</DropdownToggle>
-              <DropdownMenu>
-                {
-                  Object.keys(userParamsMapping).map(name => (
-                    <DropdownItem key={name} onClick={this.handleClickSelectCategory(name)}>
-                      {userParamsMapping[name]}
-                    </DropdownItem>
-                  ))
-                }
-              </DropdownMenu>
-            </InputGroupButtonDropdown>
-            <Input
-              name="searchByServer" 
-              type="search" 
-              value={searchingInput} 
-              onChange={this.handleInputSearchChange} 
-              placeholder="Введите для поиска" 
-            />
-            <InputGroupAddon addonType="append">
-              <Button color="secondary" onClick={updateUserData}>Поиск</Button>
-            </InputGroupAddon>
-          </InputGroup>
-          <FormGroup check>
-            <Label check>
-              <Input 
-                type="checkbox"
-                checked={fromMoscow}
-                onChange={this.handleCheckboxFromMoscowChange} 
-              />
-              Только из Москвы
-            </Label>
-          </FormGroup>
-        </Col>
-        <Col sm="1"></Col>
-        <Col sm="3">
-          <InputGroup className={styles.paddingSm}>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Фильтр по почте: </InputGroupText>
-            </InputGroupAddon>
-            <Input type="select" name="select" value={filterMail} onChange={this.handleClickSelectMail}>
-              <option value=''>Почта не выбрана</option>
+    
+  return (
+    <Row className={styles.headerRow}>
+      <Col sm="4">
+        <InputGroup className={styles.paddingSm}>
+          <InputGroupButtonDropdown addonType="prepend" isOpen={dropdownOpen} toggle={toggleDropdown}>
+            <DropdownToggle caret>{ userParamsMapping[searchField] }</DropdownToggle>
+            <DropdownMenu>
               {
-                mails.map((mail) => (
-                  <option key={mail} value={mail}>
-                    { mail }
-                  </option>
+                Object.keys(userParamsMapping).map(name => (
+                  <DropdownItem key={name} onClick={handleClickSelectCategory(name)}>
+                    {userParamsMapping[name]}
+                  </DropdownItem>
                 ))
               }
-            </Input>
-          </InputGroup>
-        </Col>
-        <Col sm="2" className={styles.uploadBtn}>
-          {!filtersAreChanged &&
-            <Button color="outline-danger" onClick={this.handleClickResetFilters}>Сбросить фильтры</Button>}
-        </Col>
-        <Col sm="2" className={styles.uploadBtn}>
-          {(!dataLoaded && !isFetching)
-            ?
-            <Button outline color="info" onClick={updateUserData}>Загрузить данные</Button>
-            :
-            <Button color="danger" onClick={this.handleClickRemoveUserData}>Очистить таблицу</Button>}
-          {fetchError &&
-            <p className={styles.redText}>Ошибка загрузки :(</p>}
-        </Col>
-      </Row>
-    );
-  };
+            </DropdownMenu>
+          </InputGroupButtonDropdown>
+          <Input
+            name="searchByServer" 
+            type="search" 
+            value={searchingInput} 
+            onChange={handleInputSearchChange} 
+            placeholder="Введите для поиска" 
+          />
+          <InputGroupAddon addonType="append">
+            <Button color="secondary" onClick={updateUserData}>Поиск</Button>
+          </InputGroupAddon>
+        </InputGroup>
+        <FormGroup check>
+          <Label check>
+            <Input 
+              type="checkbox"
+              checked={fromMoscow}
+              onChange={handleCheckboxFromMoscowChange} 
+            />
+            Только из Москвы
+          </Label>
+        </FormGroup>
+      </Col>
+      <Col sm="1"></Col>
+      <Col sm="3">
+        <InputGroup className={styles.paddingSm}>
+          <InputGroupAddon addonType="prepend">
+            <InputGroupText>Фильтр по почте: </InputGroupText>
+          </InputGroupAddon>
+          <Input type="select" name="select" value={filterMail} onChange={handleClickSelectMail}>
+            <option value=''>Почта не выбрана</option>
+            {
+              mails.map((mail) => (
+                <option key={mail} value={mail}>
+                  { mail }
+                </option>
+              ))
+            }
+          </Input>
+        </InputGroup>
+      </Col>
+      <Col sm="2" className={styles.uploadBtn}>
+        {!filtersAreChanged &&
+          <Button color="outline-danger" onClick={handleClickResetFilters}>Сбросить фильтры</Button>}
+      </Col>
+      <Col sm="2" className={styles.uploadBtn}>
+        {(!dataLoaded && !isFetching)
+          ?
+          <Button outline color="info" onClick={updateUserData}>Загрузить данные</Button>
+          :
+          <Button color="danger" onClick={handleClickRemoveUserData}>Очистить таблицу</Button>}
+        {fetchError &&
+          <p className={styles.redText}>Ошибка загрузки :(</p>}
+      </Col>
+    </Row>
+  );
 };
 
-const mapStateToProps = state => ({
-  isFetching: getIsFetching(state)[FETCH_USERS],
-  dataLoaded: getIsFetched(state)[FETCH_USERS],
-  fetchError: getIsUsersFetchError(state),
-  filters: getFilters(state),
-  filtersAreChanged: getAreFiltersChanged(state)
-});
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({
-    resetUsers,
-    setFilters,
-    resetFilters
-  }, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserFilter);
+export default UserFilter;
