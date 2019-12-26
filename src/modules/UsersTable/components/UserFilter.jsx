@@ -36,16 +36,16 @@ const UserFilter = ({ updateUserData }) => {
     dispatch(setFilters({ fromMoscow: !fromMoscow }));
   };
 
-  const handleClickSelectCategory = (searchField) => () => {
-    dispatch(setFilters({ searchField }));
+  const handleClickSelectCategory = (filterSearchField) => () => {
+    dispatch(setFilters({ searchField: filterSearchField }));
   };
 
-  const handleClickSelectMail = ({ target: { value: filterMail }}) => {
-    dispatch(setFilters({ filterMail }));
+  const handleClickSelectMail = ({ target: { value: filterFilterMail }}) => {
+    dispatch(setFilters({ filterMail: filterFilterMail }));
   };
 
-  const handleInputSearchChange = ({ target: { value: searchingInput } }) => {
-    dispatch(setFilters({ searchingInput }));
+  const handleInputSearchChange = ({ target: { value: filterSearchingInput } }) => {
+    dispatch(setFilters({ searchingInput: filterSearchingInput }));
   };
 
   const handleClickResetFilters = () => {
@@ -94,7 +94,7 @@ const UserFilter = ({ updateUserData }) => {
           </Label>
         </FormGroup>
       </Col>
-      <Col sm="1"></Col>
+      <Col sm="1" />
       <Col sm="3">
         <InputGroup className={styles.paddingSm}>
           <InputGroupAddon addonType="prepend">

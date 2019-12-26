@@ -24,8 +24,8 @@ const TableHeader = () => {
   const dispatch = useDispatch();
   const { field, direction } = useSelector(state => getFilters(state));
 
-  const sortData = (field, direction) => () => {
-    dispatch(setFilters({ direction, field }));
+  const sortData = (filterField, filterDirection) => () => {
+    dispatch(setFilters({ direction: filterDirection, field: filterField }));
   };
 
   const columnSmClass = cx(styles.thUsers, styles.tableColumnSm);

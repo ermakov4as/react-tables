@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useParams } from "react-router";
+import { useParams } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, ListGroup, ListGroupItem, Spinner } from 'reactstrap';
 
@@ -39,8 +39,8 @@ function UserTodos() {
       </p>
       <Button outline color="danger" onClick={goBack} className={styles.btnMargin}>Назад</Button>
       <ListGroup>
-        {todos && todos.map(({id, title, completed}) => (
-          <ListGroupItem key={id+title} color={completed ? 'success' : 'danger'} className={styles.pointer}>
+        {todos && todos.map(({id: todoId, title, completed}) => (
+          <ListGroupItem key={todoId+title} color={completed ? 'success' : 'danger'} className={styles.pointer}>
             {title}
           </ListGroupItem>
         ))}
